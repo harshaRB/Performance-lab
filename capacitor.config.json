@@ -1,0 +1,8 @@
+{
+    "appId": "io.performancelab.app",
+    "appName": "Performance Lab",
+    "webDir": "dist",
+    "server": {
+        "androidScheme": "https"
+    }
+}
