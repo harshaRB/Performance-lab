@@ -196,7 +196,7 @@ const ExerciseDatabase = () => {
             {/* Muscle Distribution */}
             {Object.keys(muscleDistribution).length > 0 && (
                 <div className="card" style={{ marginTop: '1rem' }}>
-                    <h3 style={{ marginBottom: '1rem' }}>TODAY'S MUSCLE DISTRIBUTION</h3>
+                    <h3 style={{ marginBottom: '1rem' }}>TODAY&apos;S MUSCLE DISTRIBUTION</h3>
                     {Object.entries(muscleDistribution).map(([muscle, volume]) => {
                         const total = Object.values(muscleDistribution).reduce((a, b) => a + b, 0);
                         const percentage = ((volume / total) * 100).toFixed(1);

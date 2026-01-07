@@ -1,4 +1,5 @@
 import React from 'react';
+import { AlertTriangle, RefreshCw } from 'lucide-react';
 
 class ErrorBoundary extends React.Component {
     constructor(props) {
@@ -6,69 +7,47 @@ class ErrorBoundary extends React.Component {
         this.state = { hasError: false, error: null, errorInfo: null };
     }
 
-    static getDerivedStateFromError(error) {
+    static getDerivedStateFromError(_error) {
         return { hasError: true };
     }
 
     componentDidCatch(error, errorInfo) {
-        console.error('ErrorBoundary caught:', error, errorInfo);
         this.setState({ error, errorInfo });
-
-        // Log to localStorage for debugging
-        const errorLog = {
-            timestamp: new Date().toISOString(),
-            error: error.toString(),
-            stack: errorInfo.componentStack
-        };
-        const logs = JSON.parse(localStorage.getItem('pl_error_logs') || '[]');
-        logs.push(errorLog);
-        localStorage.setItem('pl_error_logs', JSON.stringify(logs.slice(-10))); // Keep last 10
+        console.error('ErrorBoundary caught:', error, errorInfo);
     }
+
+    handleReset = () => {
+        this.setState({ hasError: false, error: null, errorInfo: null });
+        window.location.href = '/';
+    };
 
     render() {
         if (this.state.hasError) {
             return (
-                <div style={{
-                    background: 'var(--bg-card)',
-                    border: '2px solid var(--accent-danger)',
-                    padding: '2rem',
-                    margin: '2rem',
-                    borderRadius: '4px'
-                }}>
-                    <h2 className="mono" style={{ color: 'var(--accent-danger)', marginBottom: '1rem' }}>
-                        ⚠️ MODULE ERROR
-                    </h2>
-                    <p style={{ marginBottom: '1rem' }}>
-                        This module encountered an error and has been isolated to prevent system-wide failure.
-                    </p>
-                    <details style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
-                        <summary style={{ cursor: 'pointer', marginBottom: '0.5rem' }}>
-                            Technical Details
-                        </summary>
-                        <pre style={{
-                            background: 'var(--bg-primary)',
-                            padding: '1rem',
-                            overflow: 'auto',
-                            fontSize: '0.75rem'
-                        }}>
-                            {this.state.error && this.state.error.toString()}
-                            {this.state.errorInfo && this.state.errorInfo.componentStack}
-                        </pre>
-                    </details>
-                    <button
-                        onClick={() => this.setState({ hasError: false, error: null, errorInfo: null })}
-                        style={{
-                            marginTop: '1rem',
-                            padding: '0.75rem 1.5rem',
-                            background: 'var(--accent-danger)',
-                            color: 'white',
-                            border: 'none',
-                            cursor: 'pointer',
-                            fontFamily: 'var(--font-mono)'
-                        }}
-                    >
-                        RETRY MODULE
-                    </button>
+                <div className="min-h-screen bg-[#050505] flex items-center justify-center p-4">
+                    <div className="max-w-md w-full bg-[#0F1115] border border-rose-500/20 rounded-3xl p-8 text-center">
+                        <div className="inline-flex p-4 rounded-2xl bg-rose-500/10 border border-rose-500/20 mb-4">
+                            <AlertTriangle className="text-rose-400" size={32} />
+                        </div>
+                        <h1 className="text-xl font-bold text-white mb-2">System Fault Detected</h1>
+                        <p className="text-neutral-400 text-sm mb-6">
+                            A critical error has disrupted the application core. Our protocol suggests a system reset.
+                        </p>
+                        {this.state.error && (
+                            <div className="bg-neutral-900 border border-white/5 rounded-lg p-3 mb-6 text-left">
+                                <code className="text-xs text-rose-300 font-mono block overflow-auto max-h-32">
+                                    {this.state.error.toString()}
+                                </code>
+                            </div>
+                        )}
+                        <button
+                            onClick={this.handleReset}
+                            className="w-full py-3 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-bold tracking-widest uppercase text-sm transition-colors flex items-center justify-center gap-2"
+                        >
+                            <RefreshCw size={18} />
+                            Initialize Recovery
+                        </button>
+                    </div>
                 </div>
             );
         }

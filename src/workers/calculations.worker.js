@@ -1,20 +1,22 @@
 
-// Performance Lab - Calculations Worker
+// Vyclo Labs - Calculations Worker
 // Handles heavy statistical math off the main thread.
 
 self.onmessage = (e) => {
     const { type, payload } = e.data;
 
     switch (type) {
-        case 'CALCULATE_CORRELATIONS':
+        case 'CALCULATE_CORRELATIONS': {
             const correlations = calculateCorrelations(payload);
             self.postMessage({ type: 'CORRELATIONS_RESULT', payload: correlations });
             break;
+        }
 
-        case 'PREDICT_TREND':
+        case 'PREDICT_TREND': {
             const trend = calculateTrend(payload);
             self.postMessage({ type: 'TREND_RESULT', payload: trend });
             break;
+        }
 
         default:
             console.warn('Worker received unknown message type:', type);
@@ -74,7 +76,7 @@ function pearson(x, y) {
     return numerator / denominator;
 }
 
-function calculateTrend(data) {
+function calculateTrend(_data) {
     // Simple linear regression for the last key metric provided
     // Placeholder for predictive analytics
     return { trend: 'stable', confidence: 0.8 };

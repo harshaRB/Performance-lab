@@ -1,5 +1,5 @@
 
--- Performance Lab Database Schema
+-- Vyclo Labs Database Schema
 
 -- 1. PROFILES
 -- Stores user biometrics and settings. Links to Supabase Auth.

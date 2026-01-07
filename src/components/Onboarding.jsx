@@ -11,7 +11,7 @@ const Onboarding = () => {
 
     const steps = [
         {
-            title: 'Welcome to Performance Lab',
+            title: 'Welcome to Vyclo Labs',
             content: 'A medical-grade performance tracking system using rigorous biostatistics.',
             icon: '🔬'
         },

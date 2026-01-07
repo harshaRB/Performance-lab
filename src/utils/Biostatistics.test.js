@@ -10,7 +10,7 @@ import {
 // We'll mock it to return a fixed baseline
 vi.mock('./HistoricalDataManager', () => ({
     default: {
-        calculateBaseline: (metric, days) => ({
+        calculateBaseline: (_metric, _days) => ({
             mean: 50,
             stddev: 10,
             dataPoints: 14

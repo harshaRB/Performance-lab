@@ -23,7 +23,7 @@ const StreakTracking = () => {
 
         // Calculate current streak
         let currentStreak = 0;
-        const today = new Date().toISOString().split('T')[0];
+        const _today = new Date().toISOString().split('T')[0];
 
         for (let i = 0; i < dates.length; i++) {
             const expectedDate = new Date();

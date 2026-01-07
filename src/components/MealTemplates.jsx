@@ -45,7 +45,7 @@ const MealTemplates = ({ database, onQuickLog }) => {
         }
     };
 
-    const useTemplate = (template, mealType) => {
+    const applyTemplate = (template, mealType) => {
         // Log all items from template
         template.items.forEach(item => {
             onQuickLog(item.ingredientId, item.weight, mealType);
@@ -131,7 +131,7 @@ const MealTemplates = ({ database, onQuickLog }) => {
                                     {['breakfast', 'lunch', 'dinner'].map(type => (
                                         <button
                                             key={type}
-                                            onClick={() => useTemplate(template, type)}
+                                            onClick={() => applyTemplate(template, type)}
                                             style={{
                                                 padding: '0.5rem',
                                                 background: 'transparent',

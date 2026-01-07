@@ -1,135 +1,418 @@
 import React from 'react';
-import { NavLink, Outlet, useLocation } from 'react-router-dom';
-import { LayoutDashboard, Activity, Settings as SettingsIcon, Plus, Menu } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
-import clsx from 'clsx';
+import { NavLink, Outlet, useNavigate } from 'react-router-dom';
+import { LayoutDashboard, Activity, Settings as SettingsIcon, LogOut, Zap, Terminal } from 'lucide-react';
+import { motion } from 'framer-motion';
 import { useAppStore } from '../../store/useAppStore';
+import { useAuth } from '../../hooks/useAuth';
+import PatternBackground from '../ui/PatternBackground';
+import HexagonAvatar from '../ui/HexagonAvatar';
+import { colors, typography, radius, animations } from '../../styles/designSystem';
 
-const NavItem = ({ to, icon: Icon, label }) => {
-    return (
-        <NavLink
-            to={to}
-            className={({ isActive }) => clsx(
-                "flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 group relative overflow-hidden",
-                isActive
-                    ? "text-white bg-white/5 shadow-[0_0_20px_rgba(99,102,241,0.1)] border border-white/10"
-                    : "text-neutral-500 hover:text-white hover:bg-white/5"
-            )}
-        >
-            {({ isActive }) => (
-                <>
-                    <Icon size={20} className={clsx("transition-colors relative z-10", isActive ? "text-indigo-400" : "group-hover:text-indigo-300")} />
-                    <span className="font-medium text-sm tracking-wide relative z-10">{label}</span>
-                    {isActive && (
-                        <motion.div
-                            layoutId="nav-glow"
-                            className="absolute inset-0 bg-gradient-to-r from-indigo-500/10 to-transparent"
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            exit={{ opacity: 0 }}
-                        />
-                    )}
-                </>
-            )}
-        </NavLink>
-    );
+// ============================================
+// STYLES
+// ============================================
+const styles = {
+    layout: {
+        display: 'flex',
+        minHeight: '100vh',
+        fontFamily: typography.fontFamily.primary,
+        color: colors.text.secondary,
+    },
+
+    sidebar: {
+        width: '260px',
+        height: '100vh',
+        position: 'fixed',
+        left: 0,
+        top: 0,
+        background: 'rgba(15, 17, 21, 0.95)',
+        backdropFilter: 'blur(20px)',
+        borderRight: '1px solid rgba(255,255,255,0.05)',
+        padding: '1.5rem',
+        display: 'flex',
+        flexDirection: 'column',
+        zIndex: 50,
+    },
+
+    logoWrapper: {
+        display: 'flex',
+        alignItems: 'center',
+        gap: '0.75rem',
+        marginBottom: '2.5rem',
+        padding: '0 0.5rem',
+    },
+    logoIcon: {
+        width: '40px',
+        height: '40px',
+        background: 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)',
+        borderRadius: radius.lg,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        boxShadow: '0 0 20px rgba(99,102,241,0.3)',
+    },
+    logoText: {
+        fontSize: '1rem',
+        fontWeight: 700,
+        fontFamily: "'JetBrains Mono', monospace",
+        color: colors.text.primary,
+        letterSpacing: '-0.02em',
+    },
+    logoVersion: {
+        fontSize: '0.6rem',
+        color: colors.text.dim,
+        fontFamily: "'JetBrains Mono', monospace",
+    },
+
+    nav: {
+        flex: 1,
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '0.25rem',
+    },
+    navItem: {
+        display: 'flex',
+        alignItems: 'center',
+        gap: '0.75rem',
+        padding: '0.875rem 1rem',
+        borderRadius: radius.lg,
+        color: colors.text.muted,
+        textDecoration: 'none',
+        fontSize: '0.85rem',
+        fontWeight: 500,
+        fontFamily: "'JetBrains Mono', monospace",
+        transition: 'all 0.2s ease',
+        border: '1px solid transparent',
+    },
+    navItemActive: {
+        background: 'rgba(99,102,241,0.1)',
+        color: colors.text.primary,
+        borderColor: 'rgba(99,102,241,0.2)',
+    },
+
+    quickAddBtn: {
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        gap: '0.5rem',
+        padding: '0.875rem',
+        background: 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)',
+        border: 'none',
+        borderRadius: radius.lg,
+        color: colors.text.primary,
+        fontSize: '0.8rem',
+        fontWeight: 700,
+        fontFamily: "'JetBrains Mono', monospace",
+        textTransform: 'uppercase',
+        letterSpacing: '0.1em',
+        cursor: 'pointer',
+        marginTop: 'auto',
+        marginBottom: '1rem',
+        boxShadow: '0 0 20px rgba(99,102,241,0.3)',
+    },
+
+    userSection: {
+        padding: '1rem',
+        background: 'rgba(255,255,255,0.02)',
+        borderRadius: radius.lg,
+        border: '1px solid rgba(255,255,255,0.05)',
+        display: 'flex',
+        alignItems: 'center',
+        gap: '0.75rem',
+    },
+    userInfo: {
+        flex: 1,
+    },
+    userName: {
+        fontSize: '0.85rem',
+        fontWeight: 600,
+        color: colors.text.primary,
+    },
+    userPlan: {
+        fontSize: '0.65rem',
+        color: colors.text.dim,
+        fontFamily: "'JetBrains Mono', monospace",
+        textTransform: 'uppercase',
+    },
+    logoutBtn: {
+        padding: '0.5rem',
+        background: 'transparent',
+        border: 'none',
+        borderRadius: radius.md,
+        color: colors.text.dim,
+        cursor: 'pointer',
+    },
+
+    mainWrapper: {
+        marginLeft: '260px',
+        flex: 1,
+        display: 'flex',
+        flexDirection: 'column',
+        minHeight: '100vh',
+        position: 'relative',
+    },
+
+    header: {
+        position: 'sticky',
+        top: 0,
+        zIndex: 40,
+        background: 'rgba(5,5,5,0.9)',
+        backdropFilter: 'blur(20px)',
+        borderBottom: '1px solid rgba(255,255,255,0.05)',
+    },
+    headerContent: {
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        height: '64px',
+        padding: '0 2rem',
+        maxWidth: '1400px',
+        margin: '0 auto',
+        width: '100%',
+    },
+
+    // System Status Display
+    statusDisplay: {
+        display: 'flex',
+        alignItems: 'center',
+        gap: '2rem',
+    },
+    statusItem: {
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+    },
+    statusLabel: {
+        fontSize: '0.55rem',
+        fontWeight: 700,
+        color: colors.text.dim,
+        textTransform: 'uppercase',
+        letterSpacing: '0.2em',
+        fontFamily: "'JetBrains Mono', monospace",
+    },
+    statusValue: {
+        fontSize: '1.75rem',
+        fontWeight: 800,
+        fontFamily: "'JetBrains Mono', monospace",
+        color: colors.text.primary,
+    },
+
+    // Terminal-style ticker
+    ticker: {
+        background: 'rgba(0,0,0,0.3)',
+        borderBottom: '1px solid rgba(255,255,255,0.03)',
+        padding: '0.5rem 2rem',
+        fontFamily: "'JetBrains Mono', monospace",
+    },
+    tickerContent: {
+        display: 'flex',
+        alignItems: 'center',
+        gap: '0.75rem',
+        maxWidth: '1400px',
+        margin: '0 auto',
+    },
+    tickerIcon: {
+        color: '#22c55e',
+    },
+    tickerText: {
+        fontSize: '0.7rem',
+        color: colors.text.muted,
+    },
+
+    content: {
+        flex: 1,
+        padding: '2rem',
+        maxWidth: '1400px',
+        margin: '0 auto',
+        width: '100%',
+    },
 };
 
-const Sidebar = () => (
-    <aside className="hidden md:flex flex-col w-64 h-screen fixed left-0 top-0 bg-[#050505] border-r border-white/5 z-50 p-6">
-        <div className="mb-10 flex items-center gap-3 px-2">
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-indigo-500 to-violet-600 shadow-[0_0_15px_rgba(99,102,241,0.4)]" />
-            <span className="font-bold text-xl tracking-tight text-white/90 font-mono">PERF_LAB</span>
-        </div>
-
-        <nav className="flex-1 space-y-2">
-            <NavItem to="/" icon={LayoutDashboard} label="Command" />
-            <NavItem to="/analytics" icon={Activity} label="Deep Dive" />
-            <NavItem to="/settings" icon={SettingsIcon} label="Config" />
-        </nav>
-
-        <div className="mt-auto pt-6 border-t border-white/5">
-            <div className="px-4 py-3 rounded-xl bg-neutral-900 border border-white/5 flex items-center gap-3">
-                <div className="w-8 h-8 rounded-full bg-neutral-800" />
-                <div className="flex flex-col">
-                    <span className="text-sm text-white font-medium">User</span>
-                    <span className="text-xs text-neutral-500">Pro Plan</span>
-                </div>
-            </div>
-        </div>
-    </aside>
+// ============================================
+// NAV ITEM COMPONENT
+// ============================================
+const NavItem = ({ to, icon: Icon, label }) => (
+    <NavLink
+        to={to}
+        style={({ isActive }) => ({
+            ...styles.navItem,
+            ...(isActive ? styles.navItemActive : {}),
+        })}
+    >
+        {({ isActive }) => (
+            <>
+                <Icon size={18} color={isActive ? '#6366f1' : colors.text.muted} strokeWidth={1.5} />
+                <span>{label}</span>
+            </>
+        )}
+    </NavLink>
 );
 
-const MobileNav = () => (
-    <div className="md:hidden fixed bottom-6 left-6 right-6 h-16 bg-[#0F1115]/90 backdrop-blur-xl border border-white/10 rounded-2xl flex items-center justify-between px-8 z-50 shadow-2xl shadow-black/80">
-        <NavLink to="/" className={({ isActive }) => clsx("p-2 rounded-xl transition-colors", isActive ? "text-indigo-400 bg-white/5" : "text-neutral-600")}>
-            <LayoutDashboard size={24} />
-        </NavLink>
-        <NavLink to="/analytics" className={({ isActive }) => clsx("p-2 rounded-xl transition-colors", isActive ? "text-indigo-400 bg-white/5" : "text-neutral-600")}>
-            <Activity size={24} />
-        </NavLink>
-        <NavLink to="/settings" className={({ isActive }) => clsx("p-2 rounded-xl transition-colors", isActive ? "text-indigo-400 bg-white/5" : "text-neutral-600")}>
-            <SettingsIcon size={24} />
-        </NavLink>
-    </div>
-);
+// ============================================
+// SIDEBAR COMPONENT
+// ============================================
+const Sidebar = () => {
+    const { signOut, user } = useAuth();
+    const navigate = useNavigate();
 
-const HUD = () => {
-    const { scores } = useAppStore();
-    const sysScore = Math.round(scores.system || 0);
+    // Get user name from localStorage or email
+    const profile = JSON.parse(localStorage.getItem('pl_user_profile') || '{}');
+    const userName = profile.name || user?.email?.split('@')[0] || 'Operator';
+
+    const handleLogout = async () => {
+        await signOut();
+        navigate('/login');
+    };
 
     return (
-        <header className="sticky top-0 z-40 w-full backdrop-blur-xl bg-[#050505]/80 border-b border-white/5">
-            <div className="flex h-16 items-center justify-between px-4 md:px-8 max-w-7xl mx-auto">
-                {/* Mobile Menu Trigger Placeholder */}
-                <div className="md:hidden">
-                    <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-indigo-500 to-violet-600" />
+        <aside style={styles.sidebar}>
+            {/* Logo */}
+            <div style={styles.logoWrapper}>
+                <motion.div
+                    style={styles.logoIcon}
+                    whileHover={{ scale: 1.1, rotate: 5 }}
+                >
+                    <Terminal size={20} color="#fff" strokeWidth={1.5} />
+                </motion.div>
+                <div>
+                    <div style={styles.logoText}>VYCLO</div>
+                    <div style={styles.logoVersion}>v2.0.0-beta</div>
                 </div>
+            </div>
 
-                {/* Score Widget */}
-                <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
-                    <div className="flex flex-col items-center group cursor-default">
-                        <span className="text-[10px] uppercase tracking-[0.3em] text-neutral-500 group-hover:text-indigo-400 transition-colors">System Status</span>
-                        <div className="flex items-baseline gap-1">
-                            <span className="text-2xl font-bold font-mono text-white tracking-widest drop-shadow-[0_0_10px_rgba(99,102,241,0.3)]">
-                                {sysScore}
-                            </span>
-                            <span className="text-xs text-neutral-600">%</span>
+            {/* Navigation */}
+            <nav style={styles.nav}>
+                <NavItem to="/" icon={LayoutDashboard} label="DASHBOARD" />
+                <NavItem to="/analytics" icon={Activity} label="ANALYTICS" />
+                <NavItem to="/settings" icon={SettingsIcon} label="SETTINGS" />
+            </nav>
+
+            {/* Spacer to push user section to bottom */}
+            <div style={{ flex: 1 }} />
+
+            {/* User Section - Bottom */}
+            <div style={{
+                padding: '1rem',
+                background: 'rgba(255,255,255,0.02)',
+                borderRadius: radius.lg,
+                border: '1px solid rgba(255,255,255,0.05)',
+            }}>
+                <div style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '0.75rem',
+                    marginBottom: '0.75rem',
+                }}>
+                    <HexagonAvatar name={userName} size={40} />
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                        <div style={{
+                            fontSize: '0.85rem',
+                            fontWeight: 600,
+                            color: colors.text.primary,
+                            whiteSpace: 'nowrap',
+                            overflow: 'hidden',
+                            textOverflow: 'ellipsis',
+                        }}>
+                            {userName}
+                        </div>
+                        <div style={{
+                            fontSize: '0.65rem',
+                            color: colors.text.dim,
+                            fontFamily: "'JetBrains Mono', monospace",
+                            textTransform: 'uppercase',
+                        }}>
+                            FREE TIER
                         </div>
                     </div>
                 </div>
+                <motion.button
+                    style={{
+                        width: '100%',
+                        padding: '0.5rem',
+                        background: 'transparent',
+                        border: `1px solid rgba(239, 68, 68, 0.3)`,
+                        borderRadius: radius.md,
+                        color: colors.text.muted,
+                        fontSize: '0.7rem',
+                        fontFamily: "'JetBrains Mono', monospace",
+                        cursor: 'pointer',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        gap: '0.5rem',
+                    }}
+                    onClick={handleLogout}
+                    whileHover={{ borderColor: '#ef4444', color: '#ef4444' }}
+                >
+                    <LogOut size={14} />
+                    SIGN OUT
+                </motion.button>
+            </div>
+        </aside>
+    );
+};
 
-                {/* Quick Actions */}
-                <div className="flex items-center gap-4 ml-auto">
-                    <button className="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-lg bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 text-xs font-mono hover:bg-indigo-500/20 transition-colors">
-                        <Plus size={14} />
-                        QUICK LOG
-                    </button>
+// ============================================
+// HEADER COMPONENT  
+// ============================================
+const Header = () => {
+    const { scores } = useAppStore();
+    const _sysScore = Math.round(scores?.system || 0);
+    const date = new Date();
+
+    return (
+        <header style={styles.header}>
+            <div style={styles.headerContent}>
+                {/* Date */}
+                <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: '0.75rem', color: colors.text.dim }}>
+                    {date.toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' })}
+                </div>
+
+                {/* Center spacer */}
+                <div />
+
+                {/* Time */}
+                <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: '0.75rem', color: colors.text.dim }}>
+                    {date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}
                 </div>
             </div>
 
-            {/* Coach Ticker */}
-            <div className="w-full bg-[#0F1115] border-b border-white/5 py-1 px-4 overflow-hidden flex justify-center">
-                <p className="text-[10px] md:text-xs text-neutral-400 font-mono tracking-wide animate-pulse">
-                    AI COACH: Optimal recovery requires 8h sleep tonight. High cognitive load detected.
-                </p>
+            {/* Terminal Ticker */}
+            <div style={styles.ticker}>
+                <div style={styles.tickerContent}>
+                    <Zap size={12} style={styles.tickerIcon} />
+                    <motion.span
+                        style={styles.tickerText}
+                        animate={{ opacity: [0.5, 1, 0.5] }}
+                        transition={{ duration: 3, repeat: Infinity }}
+                    >
+                        SYSTEM ONLINE // AI COACH ACTIVE // TRACKING {Object.keys(scores || {}).length} METRICS
+                    </motion.span>
+                </div>
             </div>
         </header>
     );
 };
 
+// ============================================
+// MAIN SHELL COMPONENT
+// ============================================
 export const AppShell = () => {
     return (
-        <div className="min-h-screen bg-[#050505] text-neutral-200 font-inter selection:bg-indigo-500/30">
-            <Sidebar />
-            <div className="md:pl-64 flex flex-col min-h-screen relative">
-                <HUD />
-                <main className="flex-1 w-full max-w-7xl mx-auto p-4 md:p-8 relative z-0 pb-24 md:pb-8">
-                    <Outlet />
-                </main>
+        <PatternBackground variant="tactical">
+            <div style={styles.layout}>
+                <Sidebar />
+                <div style={styles.mainWrapper}>
+                    <Header />
+                    <motion.main
+                        style={styles.content}
+                        {...animations.pageEnter}
+                    >
+                        <Outlet />
+                    </motion.main>
+                </div>
             </div>
-            <MobileNav />
-        </div>
+        </PatternBackground>
     );
 };
 

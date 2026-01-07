@@ -5,7 +5,7 @@ const HydrationTracker = () => {
     const { dailyLogs, setDailyLog } = useAppStore();
     const today = new Date().toISOString().split('T')[0];
     const [intake, setIntake] = useState(dailyLogs[today]?.hydration || 0);
-    const target = 3000; // ml
+    const target = 5000; // ml - updated max
 
     useEffect(() => {
         if (dailyLogs[today]?.hydration !== undefined) {
@@ -14,9 +14,14 @@ const HydrationTracker = () => {
     }, [dailyLogs, today]);
 
     const addWater = (amount) => {
-        const newVal = intake + amount;
+        const newVal = Math.min(intake + amount, 5000); // Cap at 5000
         setIntake(newVal);
         setDailyLog(today, 'hydration', newVal);
+    };
+
+    const resetWater = () => {
+        setIntake(0);
+        setDailyLog(today, 'hydration', 0);
     };
 
     const percentage = Math.min((intake / target) * 100, 100);
@@ -47,18 +52,20 @@ const HydrationTracker = () => {
                 }} />
 
                 {/* Lines for measurement */}
-                <div style={{ position: 'absolute', bottom: '25%', width: '100%', borderTop: '1px dotted rgba(255,255,255,0.1)' }} />
-                <div style={{ position: 'absolute', bottom: '50%', width: '100%', borderTop: '1px dotted rgba(255,255,255,0.1)' }} />
-                <div style={{ position: 'absolute', bottom: '75%', width: '100%', borderTop: '1px dotted rgba(255,255,255,0.1)' }} />
+                <div style={{ position: 'absolute', bottom: '20%', width: '100%', borderTop: '1px dotted rgba(255,255,255,0.1)' }} />
+                <div style={{ position: 'absolute', bottom: '40%', width: '100%', borderTop: '1px dotted rgba(255,255,255,0.1)' }} />
+                <div style={{ position: 'absolute', bottom: '60%', width: '100%', borderTop: '1px dotted rgba(255,255,255,0.1)' }} />
+                <div style={{ position: 'absolute', bottom: '80%', width: '100%', borderTop: '1px dotted rgba(255,255,255,0.1)' }} />
             </div>
 
             <div className="mono" style={{ fontSize: '1.2rem' }}>
                 {intake} / {target} <span style={{ fontSize: '0.8rem' }}>ML</span>
             </div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.5rem', width: '100%', marginTop: '1rem' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '0.5rem', width: '100%', marginTop: '1rem' }}>
                 <button onClick={() => addWater(250)} style={{ background: 'transparent', border: '1px solid var(--border-subtle)', color: 'white', padding: '0.5rem', cursor: 'pointer' }}>+250ml</button>
                 <button onClick={() => addWater(500)} style={{ background: 'transparent', border: '1px solid var(--border-subtle)', color: 'white', padding: '0.5rem', cursor: 'pointer' }}>+500ml</button>
+                <button onClick={resetWater} style={{ background: 'transparent', border: '1px solid #ef4444', color: '#ef4444', padding: '0.5rem', cursor: 'pointer' }}>Reset</button>
             </div>
         </div>
     );

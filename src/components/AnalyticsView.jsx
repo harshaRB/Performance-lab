@@ -10,6 +10,7 @@ const AnalyticsView = () => {
 
     useEffect(() => {
         loadRealData();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [days]);
 
     const loadRealData = () => {

@@ -1,6 +1,6 @@
 /**
  * BIOSTATISTICS UTILITY LIBRARY
- * Performance Lab Algorithm Core
+ * Vyclo Labs Algorithm Core
  */
 
 import HistoricalDataManager from './HistoricalDataManager';
@@ -14,13 +14,13 @@ export const logistic = (z, k = 1, c = 0) => {
 export const geometricMean = (scores, weights) => {
     if (scores.length !== weights.length) return 0;
     let product = 1;
-    let weightSum = 0;
+    let _totalWeight = 0;
     for (let i = 0; i < scores.length; i++) {
         const val = Math.max(1, scores[i]);
         const w = weights[i];
         const normalizedScore = val / 100;
         product *= Math.pow(normalizedScore, w);
-        weightSum += w;
+        _totalWeight += w;
     }
     return product * 100;
 };
@@ -38,7 +38,7 @@ export const calculateZScore = (current, metricName) => {
 };
 
 // Baseline Storage Helper (DEPRECATED - now using HistoricalDataManager)
-export const getBaseline = (metricKey) => {
+export const getBaseline = (_metricKey) => {
     // Fallback for backward compatibility
     return [10, 20, 15, 30, 25, 10, 20, 15, 30, 25, 15, 20, 25, 30];
 };
@@ -78,7 +78,7 @@ export const calculateFatQualityIndex = (fats) => {
 
 // Amino Acid Completeness (Limiting Amino Acid Model)
 export const calculateAminoAcidScore = (aminoAcids) => {
-    const { essential = 0, nonEssential = 0, totalProtein = 1 } = aminoAcids;
+    const { essential = 0, nonEssential: _nonEssential = 0, totalProtein = 1 } = aminoAcids;
 
     // Essential AA should be ~40-50% of total protein
     const essentialRatio = essential / totalProtein;

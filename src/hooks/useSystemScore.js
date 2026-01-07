@@ -38,6 +38,7 @@ export const useSystemScore = () => {
 
     useEffect(() => {
         calculateAll();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [dailyLogs, profile, today]);
 
     const calculateAll = () => {

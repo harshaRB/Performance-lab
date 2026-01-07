@@ -49,9 +49,6 @@ class StatAnalysis {
             matrix[metric1] = {};
 
             metrics.forEach(metric2 => {
-                const values1 = data.map(d => d[metric1]).filter(v => v !== null && v !== undefined);
-                const values2 = data.map(d => d[metric2]).filter(v => v !== null && v !== undefined);
-
                 // Align arrays (only use indices where both have data)
                 const aligned1 = [];
                 const aligned2 = [];

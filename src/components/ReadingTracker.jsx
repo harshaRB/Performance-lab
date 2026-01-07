@@ -5,25 +5,47 @@ const ReadingTracker = () => {
     const { dailyLogs, setDailyLog } = useAppStore();
     const today = new Date().toISOString().split('T')[0];
 
-    // Default state
-    const [inputs, setInputs] = useState(dailyLogs[today]?.learning || { passive: 0, active: 0 });
+    // Default state - use empty strings for display to avoid leading zeros
+    const [inputs, setInputs] = useState(() => {
+        const saved = dailyLogs[today]?.learning || { passive: 0, active: 0 };
+        return {
+            passive: saved.passive || '',
+            active: saved.active || ''
+        };
+    });
     const [score, setScore] = useState(0);
 
     // Sync from store
     useEffect(() => {
         if (dailyLogs[today]?.learning) {
-            setInputs(dailyLogs[today].learning);
+            const saved = dailyLogs[today].learning;
+            setInputs({
+                passive: saved.passive || '',
+                active: saved.active || ''
+            });
         }
     }, [dailyLogs, today]);
 
     // Save & Calculate
     useEffect(() => {
-        setDailyLog(today, 'learning', inputs);
+        // Only save non-empty values as numbers
+        const saveData = {
+            passive: inputs.passive === '' ? 0 : parseFloat(inputs.passive),
+            active: inputs.active === '' ? 0 : parseFloat(inputs.active)
+        };
+        setDailyLog(today, 'learning', saveData);
 
         // Logic: (Active * 1.5) + Passive
-        const ell = (parseFloat(inputs.active || 0) * 1.5) + parseFloat(inputs.passive || 0);
+        const ell = (saveData.active * 1.5) + saveData.passive;
         setScore(ell.toFixed(1));
     }, [inputs, today, setDailyLog]);
+
+    const handleChange = (field, value) => {
+        // Allow empty string or valid numbers only
+        if (value === '' || /^\d*\.?\d*$/.test(value)) {
+            setInputs(prev => ({ ...prev, [field]: value }));
+        }
+    };
 
     return (
         <section className="animate-fade-in" style={{ marginTop: '2rem' }}>
@@ -47,9 +69,10 @@ const ReadingTracker = () => {
                     <div className="input-group">
                         <label className="label">Minutes</label>
                         <input
-                            type="number"
+                            type="text"
+                            inputMode="numeric"
                             value={inputs.passive}
-                            onChange={(e) => setInputs(prev => ({ ...prev, passive: parseFloat(e.target.value) || 0 }))}
+                            onChange={(e) => handleChange('passive', e.target.value)}
                             placeholder="0"
                         />
                     </div>
@@ -70,9 +93,10 @@ const ReadingTracker = () => {
                     <div className="input-group">
                         <label className="label" style={{ color: 'var(--accent-learning)' }}>Minutes</label>
                         <input
-                            type="number"
+                            type="text"
+                            inputMode="numeric"
                             value={inputs.active}
-                            onChange={(e) => setInputs(prev => ({ ...prev, active: parseFloat(e.target.value) || 0 }))}
+                            onChange={(e) => handleChange('active', e.target.value)}
                             placeholder="0"
                             style={{ borderColor: 'var(--accent-learning)' }}
                         />

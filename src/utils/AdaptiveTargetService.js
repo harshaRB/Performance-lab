@@ -3,8 +3,6 @@
  * Dynamic nutrition targets based on 7-day weight trends
  */
 
-import HistoricalDataManager from './HistoricalDataManager';
-
 class AdaptiveTargetService {
     /**
      * Calculate adaptive calorie targets based on weight trend

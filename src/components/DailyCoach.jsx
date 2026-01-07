@@ -42,7 +42,7 @@ const DailyCoach = () => {
                     marginBottom: '1.5rem',
                     fontStyle: 'italic'
                 }}>
-                    <p style={{ fontSize: '0.95rem', lineHeight: '1.6' }}>"{quote.quote}"</p>
+                    <p style={{ fontSize: '0.95rem', lineHeight: '1.6' }}>&quot;{quote.quote}&quot;</p>
                     <p style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', marginTop: '0.5rem', textAlign: 'right' }}>
                         — {quote.author}
                     </p>

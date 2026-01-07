@@ -20,6 +20,7 @@ const AchievementBadges = () => {
 
     useEffect(() => {
         checkAchievements();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const checkAchievements = () => {
@@ -53,7 +54,7 @@ const AchievementBadges = () => {
         const dates = Object.keys(history).sort();
 
         let currentStreak = 0;
-        const today = new Date().toISOString().split('T')[0];
+        const _today = new Date().toISOString().split('T')[0];
 
         for (let i = 0; i <= 365; i++) {
             const checkDate = new Date();

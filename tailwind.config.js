@@ -30,6 +30,8 @@ export default {
                 'glow-secondary': '0 0 20px rgba(139, 92, 246, 0.3)',
                 'glow-accent': '0 0 20px rgba(16, 185, 129, 0.3)',
                 'glass': '0 8px 32px 0 rgba(0, 0, 0, 0.37)',
+                'phantom-border': '0 0 0 1px rgba(99, 102, 241, 0.15), inset 0 0 0 1px rgba(255, 255, 255, 0.05), 0 0 40px rgba(99, 102, 241, 0.08)',
+                'phantom-hover': '0 0 0 1px rgba(99, 102, 241, 0.3), inset 0 0 0 1px rgba(255, 255, 255, 0.1), 0 0 60px rgba(99, 102, 241, 0.15), 0 20px 40px rgba(0, 0, 0, 0.3)',
             },
             backgroundImage: {
                 'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',

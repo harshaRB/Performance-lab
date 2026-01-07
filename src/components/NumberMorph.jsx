@@ -23,6 +23,7 @@ const useCountUp = (end, duration = 1000) => {
         };
 
         requestAnimationFrame(step);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [end, duration]);
 
     return count;

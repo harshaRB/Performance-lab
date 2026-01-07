@@ -24,7 +24,7 @@ const defaultScores = {
 
 export const useAppStore = create(
     persist(
-        (set, get) => ({
+        (set, _get) => ({
             // User Profile
             profile: defaultProfile,
             setProfile: (newProfile) => set((state) => ({

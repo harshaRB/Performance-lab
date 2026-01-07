@@ -57,6 +57,7 @@ const UserProfile = () => {
         if (profile.weight && profile.height && profile.age) {
             calculateMetrics();
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [profile]);
 
     return (

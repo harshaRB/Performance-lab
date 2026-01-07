@@ -11,7 +11,7 @@ const DashboardLayout = ({ children }) => {
                 className="mb-8"
             >
                 <h1 className="text-4xl font-bold text-electric-blue data-text mb-2">
-                    PERFORMANCE LAB
+                    VYCLO LABS
                 </h1>
                 <p className="header-text text-gray-500">
                     BIOMETRIC INTELLIGENCE SYSTEM // v2.0

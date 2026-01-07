@@ -1,5 +1,5 @@
 
-// Performance Lab - Daily Coach Heuristic Engine
+// Vyclo Labs - Daily Coach Heuristic Engine
 // Generates "Insight of the Day" based on user scores.
 
 export const getCoachInsight = (scores) => {

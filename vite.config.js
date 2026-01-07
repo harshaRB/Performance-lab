@@ -11,9 +11,9 @@ export default defineConfig({
             registerType: 'autoUpdate',
             includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'masked-icon.svg'],
             manifest: {
-                name: 'Performance Lab',
-                short_name: 'PerfLab',
-                description: 'Tactical biometric optimization interface.',
+                name: 'Vylos Labs',
+                short_name: 'Vylos',
+                description: 'Advanced biometric tracking and performance analytics.',
                 theme_color: '#050505',
                 background_color: '#050505',
                 display: 'standalone',

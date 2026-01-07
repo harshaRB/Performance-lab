@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { Plus, Trash2, Search, Zap, Droplet } from 'lucide-react';
 import { useAppStore } from '../store/useAppStore';
 
 const NutritionTracker = () => {
@@ -300,10 +299,81 @@ const NutritionTracker = () => {
                     {database.length > 0 && (
                         <div style={{ marginTop: '1.5rem' }}>
                             <p className="label">DATABASE ({database.length} ingredients)</p>
-                            <div style={{ maxHeight: '200px', overflowY: 'auto', fontSize: '0.85rem' }}>
-                                {database.map(ing => (
-                                    <div key={ing.id} style={{ padding: '0.5rem', borderBottom: '1px solid var(--border-subtle)' }}>
-                                        {ing.name} - {ing.calories} cal, {ing.protein}g protein
+                            <div style={{ maxHeight: '250px', overflowY: 'auto', fontSize: '0.85rem' }}>
+                                {database.map((ing, index) => (
+                                    <div key={ing.id} style={{
+                                        padding: '0.75rem',
+                                        borderBottom: '1px solid var(--border-subtle)',
+                                        display: 'flex',
+                                        justifyContent: 'space-between',
+                                        alignItems: 'center'
+                                    }}>
+                                        <div>
+                                            <span style={{ color: 'var(--text-primary)' }}>{ing.name}</span>
+                                            <span style={{ color: 'var(--text-secondary)', marginLeft: '0.5rem' }}>
+                                                {ing.calories} cal | {ing.protein}g P | {ing.carbs}g C | {ing.fats}g F
+                                            </span>
+                                        </div>
+                                        <div style={{ display: 'flex', gap: '0.5rem' }}>
+                                            <button
+                                                onClick={() => {
+                                                    setNewIng({
+                                                        name: ing.name,
+                                                        calories: ing.calories,
+                                                        carbs: ing.carbs || '',
+                                                        totalSugar: ing.totalSugar || '',
+                                                        fats: ing.fats || '',
+                                                        mufa: ing.mufa || '',
+                                                        pufa: ing.pufa || '',
+                                                        transFats: ing.transFats || '',
+                                                        cholesterol: ing.cholesterol || '',
+                                                        protein: ing.protein || '',
+                                                        essentialAA: ing.essentialAA || '',
+                                                        nonEssentialAA: ing.nonEssentialAA || '',
+                                                        fiber: ing.fiber || '',
+                                                        vitaminA: ing.vitaminA || '',
+                                                        vitaminC: ing.vitaminC || '',
+                                                        vitaminD: ing.vitaminD || '',
+                                                        calcium: ing.calcium || '',
+                                                        iron: ing.iron || '',
+                                                        magnesium: ing.magnesium || ''
+                                                    });
+                                                    // Delete old entry so save creates updated one
+                                                    const updated = database.filter((_, i) => i !== index);
+                                                    setDatabase(updated);
+                                                    localStorage.setItem('pl_nutrition_db', JSON.stringify(updated));
+                                                }}
+                                                style={{
+                                                    padding: '0.25rem 0.5rem',
+                                                    background: 'transparent',
+                                                    border: '1px solid #6366f1',
+                                                    borderRadius: '4px',
+                                                    color: '#6366f1',
+                                                    fontSize: '0.7rem',
+                                                    cursor: 'pointer'
+                                                }}
+                                            >
+                                                Edit
+                                            </button>
+                                            <button
+                                                onClick={() => {
+                                                    const updated = database.filter((_, i) => i !== index);
+                                                    setDatabase(updated);
+                                                    localStorage.setItem('pl_nutrition_db', JSON.stringify(updated));
+                                                }}
+                                                style={{
+                                                    padding: '0.25rem 0.5rem',
+                                                    background: 'transparent',
+                                                    border: '1px solid #ef4444',
+                                                    borderRadius: '4px',
+                                                    color: '#ef4444',
+                                                    fontSize: '0.7rem',
+                                                    cursor: 'pointer'
+                                                }}
+                                            >
+                                                ×
+                                            </button>
+                                        </div>
                                     </div>
                                 ))}
                             </div>
@@ -355,6 +425,7 @@ const NutritionTracker = () => {
                                     onChange={e => setWeight(e.target.value)}
                                 />
                             </div>
+
                             <button className="primary-btn" onClick={logMeal}>LOG TO {selectedMealType.toUpperCase()}</button>
                         </>
                     ) : (
@@ -444,6 +515,7 @@ const NutritionTracker = () => {
                                             <div key={i} style={{
                                                 display: 'flex',
                                                 justifyContent: 'space-between',
+                                                alignItems: 'center',
                                                 padding: '0.5rem',
                                                 background: mealType === 'junk' ? 'rgba(239, 68, 68, 0.05)' : 'rgba(125, 133, 144, 0.05)',
                                                 marginBottom: '0.3rem',
