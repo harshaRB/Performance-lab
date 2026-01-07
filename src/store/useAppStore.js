@@ -10,7 +10,8 @@ const defaultProfile = {
     weight: '',
     height: '',
     activityLevel: 'sedentary',
-    goal: 'maintenance'
+    goal: 'maintenance',
+    avatarId: 'operator'
 };
 
 const defaultScores = {
@@ -163,7 +164,8 @@ export const useAppStore = create(
             storage: createJSONStorage(() => localStorage),
             partialize: (state) => ({
                 profile: state.profile,
-                dailyLogs: state.dailyLogs
+                dailyLogs: state.dailyLogs,
+                scores: state.scores
             }),
         }
     )

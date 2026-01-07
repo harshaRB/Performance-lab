@@ -153,10 +153,13 @@ const moduleConfigs = {
     },
 };
 
+import { useSystemScore } from '../hooks/useSystemScore';
+
 // ============================================
 // DASHBOARD COMPONENT
 // ============================================
 const DashboardV2 = () => {
+    useSystemScore(); // Calculate live scores based on logs
     const [activeModule, setActiveModule] = useState(null);
     const { scores, profile } = useAppStore();
 

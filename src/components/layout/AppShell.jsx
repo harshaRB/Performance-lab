@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavLink, Outlet, useNavigate } from 'react-router-dom';
-import { LayoutDashboard, Activity, Settings as SettingsIcon, LogOut, Zap, Terminal } from 'lucide-react';
+import { LayoutDashboard, Activity, Settings as SettingsIcon, LogOut, Zap, Terminal, Info, Ghost, Crosshair, Cpu } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useAppStore } from '../../store/useAppStore';
 import { useAuth } from '../../hooks/useAuth';
@@ -255,9 +255,30 @@ const Sidebar = () => {
     const { signOut, user } = useAuth();
     const navigate = useNavigate();
 
-    // Get user name from localStorage or email
-    const profile = JSON.parse(localStorage.getItem('pl_user_profile') || '{}');
-    const userName = profile.name || user?.email?.split('@')[0] || 'User';
+    // Use store profile for reactivity
+    const { profile: storeProfile } = useAppStore();
+
+    // Fallback logic if store isn't hydrated yet (though it should be via persist)
+    const localProfile = JSON.parse(localStorage.getItem('pl_user_profile') || '{}');
+    const displayProfile = storeProfile.name ? storeProfile : localProfile;
+
+    const userName = displayProfile.name || user?.email?.split('@')[0] || 'User';
+    const avatarId = displayProfile.avatarId || 'operator';
+
+    // Avatar Mapping (Duplicated from Settings for self-containment)
+    const getAvatarConfig = (id) => {
+        switch (id) {
+            case 'medic': return { icon: Activity, color: '#ef4444' };
+            case 'tactician': return { icon: Crosshair, color: '#22c55e' };
+            case 'ghost': return { icon: Ghost, color: '#9ca3af' };
+            case 'engineer': return { icon: Cpu, color: '#f59e0b' };
+            case 'speed': return { icon: Zap, color: '#eab308' };
+            case 'operator':
+            default: return { icon: Terminal, color: '#6366f1' };
+        }
+    };
+
+    const avatarConfig = getAvatarConfig(avatarId);
 
     const handleLogout = async () => {
         await signOut();
@@ -285,6 +306,7 @@ const Sidebar = () => {
                 <NavItem to="/" icon={LayoutDashboard} label="DASHBOARD" />
                 <NavItem to="/analytics" icon={Activity} label="ANALYTICS" />
                 <NavItem to="/settings" icon={SettingsIcon} label="SETTINGS" />
+                <NavItem to="/about" icon={Info} label="MANIFESTO" />
             </nav>
 
             {/* Spacer to push user section to bottom */}
@@ -303,7 +325,12 @@ const Sidebar = () => {
                     gap: '0.75rem',
                     marginBottom: '0.75rem',
                 }}>
-                    <HexagonAvatar name={userName} size={40} />
+                    <HexagonAvatar
+                        name={userName}
+                        size={40}
+                        icon={avatarConfig.icon}
+                        color={avatarConfig.color}
+                    />
                     <div style={{ flex: 1, minWidth: 0 }}>
                         <div style={{
                             fontSize: '0.85rem',

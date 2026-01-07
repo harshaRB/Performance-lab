@@ -3,7 +3,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import {
     User, Bell, Shield, LogOut, ChevronRight, ChevronDown, Moon, Sun, Zap,
     FileText, Scale, Cookie, Trash2, ScrollText,
-    CreditCard, Star, Check, ShieldCheck
+    CreditCard, Star, Check, ShieldCheck,
+    Cpu, Activity, Ghost, Crosshair, Zap as ZapIcon, Terminal as TerminalIcon
 } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 import { useNavigate } from 'react-router-dom';
@@ -11,9 +12,19 @@ import { colors, typography, radius, animations } from '../styles/designSystem';
 import { useTwoFactor } from '../hooks/useTwoFactor';
 import { useSubscription } from '../hooks/useSubscription';
 import TwoFactorSetup from '../components/auth/TwoFactorSetup';
-import SubscriptionModal from '../components/settings/SubscriptionModal';
+import { useAppStore } from '../store/useAppStore';
+import HexagonAvatar from '../components/ui/HexagonAvatar';
 
-// ============================================
+const AVATAR_PRESETS = [
+    { id: 'operator', label: 'Operator', icon: TerminalIcon, color: '#6366f1' },
+    { id: 'medic', label: 'Medic', icon: Activity, color: '#ef4444' },
+    { id: 'tactician', label: 'Tactician', icon: Crosshair, color: '#22c55e' },
+    { id: 'ghost', label: 'Ghost', icon: Ghost, color: '#9ca3af' },
+    { id: 'engineer', label: 'Engineer', icon: Cpu, color: '#f59e0b' },
+    { id: 'speed', label: 'Blitz', icon: ZapIcon, color: '#eab308' },
+];
+
+
 // STYLES
 // ============================================
 const styles = {
@@ -262,6 +273,8 @@ const Settings = () => {
     const { signOut, user } = useAuth();
     const { isEnabled: twoFactorEnabled, unenrollTOTP, isLoading: is2FALoading } = useTwoFactor();
     const { isPro, subscription, isDemo } = useSubscription();
+
+    const { setProfile: updateStoreProfile } = useAppStore();
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -279,7 +292,12 @@ const Settings = () => {
     };
 
     const saveProfile = () => {
+        // Save to LocalStorage (Legacy/Backup)
         localStorage.setItem('pl_user_profile', JSON.stringify(profile));
+
+        // Sync to Zustand Store (Live)
+        updateStoreProfile(profile);
+
         alert('Profile saved!');
     };
 
@@ -560,6 +578,35 @@ const Settings = () => {
                                     exit={{ height: 0, opacity: 0 }}
                                     transition={{ duration: 0.2 }}
                                 >
+                                    <div style={{ marginBottom: '1.5rem', paddingBottom: '1.5rem', borderBottom: `1px solid ${colors.border.subtle}` }}>
+                                        <label style={styles.label}>Select Avatar</label>
+                                        <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
+                                            {AVATAR_PRESETS.map(preset => (
+                                                <motion.div
+                                                    key={preset.id}
+                                                    onClick={() => setProfile(p => ({ ...p, avatarId: preset.id }))}
+                                                    whileHover={{ scale: 1.1 }}
+                                                    whileTap={{ scale: 0.95 }}
+                                                    style={{
+                                                        cursor: 'pointer',
+                                                        opacity: profile.avatarId === preset.id ? 1 : 0.4,
+                                                        filter: profile.avatarId === preset.id ? 'grayscale(0%)' : 'grayscale(100%)',
+                                                        transition: 'all 0.2s',
+                                                    }}
+                                                    title={preset.label}
+                                                >
+                                                    <HexagonAvatar
+                                                        size={56}
+                                                        color={preset.color}
+                                                        icon={preset.icon}
+                                                        glowing={profile.avatarId === preset.id}
+                                                        name={profile.name}
+                                                    />
+                                                </motion.div>
+                                            ))}
+                                        </div>
+                                    </div>
+
                                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
                                         <div style={styles.inputGroup}>
                                             <label style={styles.label}>Full Name</label>

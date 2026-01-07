@@ -11,7 +11,8 @@ const HexagonAvatar = ({
     name = 'User',
     size = 48,
     color = '#6366f1',
-    glowing = true
+    glowing = true,
+    icon: Icon
 }) => {
     // Get initials (first 2 characters or first letters of words)
     const getInitials = (name) => {
@@ -77,18 +78,29 @@ const HexagonAvatar = ({
                 />
             </svg>
 
-            {/* Initials */}
-            <span style={{
+            {/* Content: Icon or Initials */}
+            <div style={{
                 position: 'relative',
-                fontSize: fontSize,
-                fontWeight: 700,
-                fontFamily: "'JetBrains Mono', monospace",
+                zIndex: 2,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
                 color: color,
-                textShadow: glowing ? `0 0 10px ${color}50` : 'none',
-                letterSpacing: '0.05em',
+                filter: glowing ? `drop-shadow(0 0 8px ${color}50)` : 'none'
             }}>
-                {initials}
-            </span>
+                {Icon ? (
+                    <Icon size={size * 0.5} strokeWidth={1.5} />
+                ) : (
+                    <span style={{
+                        fontSize: fontSize,
+                        fontWeight: 700,
+                        fontFamily: "'JetBrains Mono', monospace",
+                        letterSpacing: '0.05em',
+                    }}>
+                        {initials}
+                    </span>
+                )}
+            </div>
         </div>
     );
 };

@@ -10,6 +10,7 @@ import ErrorBoundary from './components/ErrorBoundary';
 const Dashboard = lazy(() => import('./views/DashboardV2'));
 const Analytics = lazy(() => import('./views/Analytics'));
 const Settings = lazy(() => import('./views/Settings'));
+const AboutPage = lazy(() => import('./views/AboutPage'));
 const LoginPage = lazy(() => import('./views/LoginPage'));
 const SignupPage = lazy(() => import('./views/SignupPage'));
 
@@ -57,6 +58,7 @@ function App() {
                                 <Route index element={<Dashboard />} />
                                 <Route path="analytics" element={<Analytics />} />
                                 <Route path="settings" element={<Settings />} />
+                                <Route path="about" element={<AboutPage />} />
                                 <Route path="login" element={<Navigate to="/" replace />} />
                                 <Route path="signup" element={<Navigate to="/" replace />} />
                             </Route>
