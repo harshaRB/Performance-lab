@@ -200,6 +200,7 @@ const DashboardV2 = () => {
         training: scores?.training || 0,
         learning: scores?.learning || 0,
         screen: scores?.screen || 0,
+        system: scores?.system || 0,
     };
 
     return (

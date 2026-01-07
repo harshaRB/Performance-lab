@@ -57,7 +57,11 @@ const SystemScoreHub = ({
     const nodeRadius = 28;
 
     // Calculate system score
+    // Use pre-calculated system score from props if available
     const systemScore = useMemo(() => {
+        if (scores.system !== undefined) return scores.system;
+
+        // Fallback: Weighted Arithmetic Mean (Legacy behavior)
         let total = 0;
         let weightSum = 0;
         MODULES.forEach(m => {
