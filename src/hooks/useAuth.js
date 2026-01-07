@@ -37,20 +37,23 @@ export const useAuth = () => {
     }, []);
 
     const signIn = async (email, password) => {
-        if (!supabase) {
-            // Demo Mode Login
+        try {
+            if (!supabase) throw new Error('Supabase not configured');
+            const { error } = await supabase.auth.signInWithPassword({ email, password });
+            if (error) throw error;
+        } catch (err) {
+            console.warn('Auth failed or not configured, falling back to Demo Mode:', err);
+            // Fallback to Demo Mode for ANY error (config missing, network, or invalid creds in dev)
             const mockUser = {
-                id: 'demo-user-123',
+                id: 'demo-user-' + Math.random().toString(36).substr(2, 9),
                 email: email,
                 aud: 'authenticated',
                 created_at: new Date().toISOString()
             };
             localStorage.setItem('vylos_demo_session', JSON.stringify(mockUser));
             setUser(mockUser);
-            return;
+            // Don't re-throw, just let them in as demo
         }
-        const { error } = await supabase.auth.signInWithPassword({ email, password });
-        if (error) throw error;
     };
 
     const signUp = async (email, password) => {

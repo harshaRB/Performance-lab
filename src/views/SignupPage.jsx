@@ -357,7 +357,7 @@ const SignupPage = () => {
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
                                 placeholder="••••••••••"
-                                style={{ ...styles.input, paddingRight: '3rem' }}
+                                style={{ ...styles.input, paddingRight: '4rem' }}
                                 onFocus={(e) => {
                                     e.target.style.borderColor = '#10b981';
                                     e.target.style.boxShadow = '0 0 15px rgba(16,185,129,0.2)';

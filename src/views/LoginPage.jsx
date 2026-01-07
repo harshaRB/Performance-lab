@@ -293,7 +293,7 @@ const LoginPage = () => {
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
                                 placeholder="••••••••••"
-                                style={{ ...styles.input, paddingRight: '3rem' }}
+                                style={{ ...styles.input, paddingRight: '4rem' }}
                                 onFocus={(e) => {
                                     e.target.style.borderColor = '#6366f1';
                                     e.target.style.boxShadow = '0 0 15px rgba(99,102,241,0.2)';
