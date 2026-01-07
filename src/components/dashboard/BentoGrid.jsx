@@ -72,7 +72,7 @@ export const BentoGrid = ({ onOpenModule }) => {
             <motion.div variants={itemVariants}>
                 <MetricCard
                     title="SLEEP"
-                    value={log.sleep?.duration ? `${log.sleep.duration}h` : "--"}
+                    value={log.sleep?.duration ? `${Number(log.sleep.duration).toFixed(1)}h` : "--"}
                     subtext={log.sleep?.quality ? `QUALITY: ${log.sleep.quality}/10` : "NOT LOGGED"}
                     icon={Moon}
                     color="sleep"

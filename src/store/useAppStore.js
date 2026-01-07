@@ -64,11 +64,11 @@ export const useAppStore = create(
                     const dateStr = d.toISOString().split('T')[0];
 
                     demoLogs[dateStr] = {
-                        sleep: { duration: 7 + Math.random(), quality: 80 + Math.random() * 15 },
-                        learning: { active: 45 + Math.random() * 30, passive: 15 },
-                        screen: { total: 120 + Math.random() * 60 },
+                        sleep: { duration: Number((7 + Math.random()).toFixed(1)), quality: Math.floor(8 + Math.random() * 2) },
+                        learning: { active: Math.floor(45 + Math.random() * 30), passive: 15 },
+                        screen: { total: Math.floor(120 + Math.random() * 60) },
                         nutrition: {
-                            totalCalories: 2200 + Math.random() * 300,
+                            totalCalories: Math.floor(2200 + Math.random() * 300),
                             macros: { protein: 160, carbs: 200, fats: 70 }
                         }
                     };

@@ -296,7 +296,7 @@ export const SleepTracker = () => {
                 <div style={{ textAlign: 'center', marginBottom: '1.5rem', padding: '1rem', background: '#1a1a2e', borderRadius: '8px' }}>
                     <p style={{ fontSize: '0.65rem', color: '#6b7280', textTransform: 'uppercase', marginBottom: '0.5rem' }}>Hours Slept</p>
                     <div style={{ fontSize: '2.5rem', fontFamily: 'monospace', color: localData.duration >= 7 ? '#10b981' : localData.duration >= 5 ? '#f59e0b' : '#ef4444' }}>
-                        {localData.duration || '--'}h
+                        {localData.duration ? Number(localData.duration).toFixed(1) : '--'}h
                     </div>
                 </div>
 

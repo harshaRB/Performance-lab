@@ -13,16 +13,25 @@ export const logistic = (z, k = 1, c = 0) => {
 // Weighted Geometric Mean
 export const geometricMean = (scores, weights) => {
     if (scores.length !== weights.length) return 0;
-    let product = 1;
-    let _totalWeight = 0;
+
+    // Log-sum-exp method for better numerical stability with weights
+    let numerator = 0;
+    let totalWeight = 0;
+
     for (let i = 0; i < scores.length; i++) {
+        // Clamp min score to 1 to avoid log(0)
         const val = Math.max(1, scores[i]);
         const w = weights[i];
-        const normalizedScore = val / 100;
-        product *= Math.pow(normalizedScore, w);
-        _totalWeight += w;
+
+        // Sum(w * ln(x))
+        numerator += w * Math.log(val);
+        totalWeight += w;
     }
-    return product * 100;
+
+    if (totalWeight === 0) return 0;
+
+    // exp( Sum(w * ln(x)) / Sum(w) )
+    return Math.exp(numerator / totalWeight);
 };
 
 // Rolling Z-Score Calculation with REAL baseline

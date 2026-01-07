@@ -3,9 +3,10 @@ import { logistic, geometricMean, calculateZScore, calculateMacroScore, calculat
 import { useAppStore } from '../store/useAppStore';
 
 // Screen time penalty constants
-const SOCIAL_PENALTY_COEFFICIENT = 0.015;
-const ENTERTAINMENT_PENALTY_COEFFICIENT = 0.02;
-const SCREEN_TIME_EXPONENT = 1.8;
+// Screen time penalty constants
+const SOCIAL_PENALTY_COEFFICIENT = 0.010; // Slightly reduced from 0.015
+const ENTERTAINMENT_PENALTY_COEFFICIENT = 0.015; // Reduced from 0.02
+const SCREEN_TIME_EXPONENT = 1.5; // Reduced from 1.8 to soften the exponential curve
 const PRODUCTIVE_SCREEN_BONUS = 0.1;
 
 // Nutrition constants
