@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Apple, Moon, Dumbbell, Brain, Smartphone, Droplets } from 'lucide-react';
-import { colors, typography, radius, shadows, animations } from '../styles/designSystem';
+import { colors, typography, radius, shadows } from '../styles/designSystem';
 import { useAppStore } from '../store/useAppStore';
 
 // Import components
@@ -21,19 +21,38 @@ const styles = {
         width: '100%',
     },
 
-    // Page Header
     header: {
         marginBottom: '2rem',
     },
     greeting: {
-        fontSize: typography.fontSize['2xl'],
-        fontWeight: typography.fontWeight.bold,
+        fontSize: '2rem',
+        fontWeight: '800',
         color: colors.text.primary,
-        marginBottom: '0.5rem',
+        marginBottom: '0.25rem',
+        lineHeight: 1.2,
+    },
+    greetingHello: {
+        fontSize: '1rem',
+        fontWeight: '500',
+        color: colors.text.muted,
+        marginBottom: '0.25rem',
+    },
+    userName: {
+        background: 'linear-gradient(135deg, #6366f1 0%, #a855f7 50%, #ec4899 100%)',
+        backgroundClip: 'text',
+        WebkitBackgroundClip: 'text',
+        WebkitTextFillColor: 'transparent',
+        display: 'inline',
+    },
+    emoji: {
+        display: 'inline-block',
+        marginLeft: '0.5rem',
+        fontSize: '1.5rem',
     },
     subtitle: {
         fontSize: typography.fontSize.sm,
         color: colors.text.muted,
+        marginTop: '0.5rem',
     },
 
     // Modal
@@ -139,14 +158,29 @@ const moduleConfigs = {
 // ============================================
 const DashboardV2 = () => {
     const [activeModule, setActiveModule] = useState(null);
-    const { scores } = useAppStore();
+    const { scores, profile } = useAppStore();
 
-    const getGreeting = () => {
+    // Get user's name from profile or localStorage
+    const userName = useMemo(() => {
+        const storedProfile = JSON.parse(localStorage.getItem('pl_user_profile') || '{}');
+        const name = profile?.name || storedProfile?.name || 'User';
+        // Capitalize first letter
+        return name.charAt(0).toUpperCase() + name.slice(1).split(' ')[0];
+    }, [profile]);
+
+    // Get time-based greeting with emoji
+    const greetingInfo = useMemo(() => {
         const hour = new Date().getHours();
-        if (hour < 12) return 'Good Morning';
-        if (hour < 17) return 'Good Afternoon';
-        return 'Good Evening';
-    };
+        if (hour >= 5 && hour < 12) {
+            return { text: 'Good Morning', emoji: '☀️', period: 'morning' };
+        } else if (hour >= 12 && hour < 17) {
+            return { text: 'Good Afternoon', emoji: '🌤️', period: 'afternoon' };
+        } else if (hour >= 17 && hour < 21) {
+            return { text: 'Good Evening', emoji: '🌅', period: 'evening' };
+        } else {
+            return { text: 'Good Night', emoji: '🌙', period: 'night' };
+        }
+    }, []);
 
     const handleOpenModule = (moduleId) => {
         setActiveModule(moduleId);
@@ -170,13 +204,55 @@ const DashboardV2 = () => {
 
     return (
         <div style={styles.container}>
-            {/* Greeting */}
+            {/* Personalized Greeting */}
             <motion.div
-                style={{ marginBottom: '1.5rem' }}
-                {...animations.slideUp}
+                style={{ marginBottom: '2rem' }}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, ease: 'easeOut' }}
             >
-                <h1 style={styles.greeting}>{getGreeting()}, Operator</h1>
-                <p style={styles.subtitle}>Your performance command center</p>
+                <motion.p
+                    style={styles.greetingHello}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 0.2 }}
+                >
+                    Hello,
+                </motion.p>
+                <motion.h1
+                    style={styles.greeting}
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.3, duration: 0.5 }}
+                >
+                    <span style={styles.userName}>{userName}</span>
+                    <motion.span
+                        style={styles.emoji}
+                        animate={{
+                            rotate: [0, 10, -10, 10, 0],
+                            scale: [1, 1.1, 1]
+                        }}
+                        transition={{ duration: 1.5, delay: 0.8, repeat: Infinity, repeatDelay: 5 }}
+                    >
+                        😊
+                    </motion.span>
+                </motion.h1>
+                <motion.p
+                    style={styles.greeting}
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.4, duration: 0.5 }}
+                >
+                    {greetingInfo.text} {greetingInfo.emoji}
+                </motion.p>
+                <motion.p
+                    style={styles.subtitle}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 0.6 }}
+                >
+                    Your personal performance command center
+                </motion.p>
             </motion.div>
 
             {/* SYSTEM SCORE HUB - Center of Attraction */}

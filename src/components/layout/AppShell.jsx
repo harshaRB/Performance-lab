@@ -257,7 +257,7 @@ const Sidebar = () => {
 
     // Get user name from localStorage or email
     const profile = JSON.parse(localStorage.getItem('pl_user_profile') || '{}');
-    const userName = profile.name || user?.email?.split('@')[0] || 'Operator';
+    const userName = profile.name || user?.email?.split('@')[0] || 'User';
 
     const handleLogout = async () => {
         await signOut();
