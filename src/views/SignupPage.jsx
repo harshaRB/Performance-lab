@@ -272,7 +272,7 @@ const SignupPage = () => {
 
                 {/* Header */}
                 <h1 style={styles.title}>Join Vylos Labs</h1>
-                <p style={styles.subtitle}>INITIALIZE // NEW_OPERATOR</p>
+                <p style={styles.subtitle}>INITIALIZE // NEW_USER</p>
 
                 {/* Feature Pills */}
                 <div style={styles.features}>
@@ -343,6 +343,15 @@ const SignupPage = () => {
                         <label style={styles.inputLabel}>Create Password</label>
                         <div style={styles.inputWrapper}>
                             <Lock size={18} style={styles.inputIcon} />
+                            <style>
+                                {/* Hide native password eye in Edge/IE */}
+                                {`
+                                    input::-ms-reveal,
+                                    input::-ms-clear {
+                                        display: none;
+                                    }
+                                `}
+                            </style>
                             <input
                                 type={showPassword ? 'text' : 'password'}
                                 value={password}
@@ -371,6 +380,11 @@ const SignupPage = () => {
                                     border: 'none',
                                     color: '#6b7280',
                                     cursor: 'pointer',
+                                    zIndex: 10,
+                                    padding: '0.25rem',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center'
                                 }}
                             >
                                 {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}

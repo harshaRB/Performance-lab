@@ -279,6 +279,15 @@ const LoginPage = () => {
                         <label style={styles.inputLabel}>Password</label>
                         <div style={styles.inputWrapper}>
                             <Lock size={18} style={styles.inputIcon} />
+                            <style>
+                                {/* Hide native password eye in Edge/IE */}
+                                {`
+                                    input::-ms-reveal,
+                                    input::-ms-clear {
+                                        display: none;
+                                    }
+                                `}
+                            </style>
                             <input
                                 type={showPassword ? 'text' : 'password'}
                                 value={password}
@@ -307,6 +316,11 @@ const LoginPage = () => {
                                     border: 'none',
                                     color: '#6b7280',
                                     cursor: 'pointer',
+                                    zIndex: 10,
+                                    padding: '0.25rem',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center'
                                 }}
                             >
                                 {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}

@@ -7,9 +7,13 @@ export const useAuth = () => {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        // If Supabase isn't configured, skip auth and allow demo mode
+        // If Supabase isn't configured, check for demo session
         if (!isSupabaseConfigured || !supabase) {
             console.warn('Running in demo mode - Supabase not configured');
+            const demoSession = localStorage.getItem('vylos_demo_session');
+            if (demoSession) {
+                setUser(JSON.parse(demoSession));
+            }
             setLoading(false);
             return;
         }
@@ -33,19 +37,46 @@ export const useAuth = () => {
     }, []);
 
     const signIn = async (email, password) => {
-        if (!supabase) throw new Error('Supabase not configured');
+        if (!supabase) {
+            // Demo Mode Login
+            const mockUser = {
+                id: 'demo-user-123',
+                email: email,
+                aud: 'authenticated',
+                created_at: new Date().toISOString()
+            };
+            localStorage.setItem('vylos_demo_session', JSON.stringify(mockUser));
+            setUser(mockUser);
+            return;
+        }
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
     };
 
     const signUp = async (email, password) => {
-        if (!supabase) throw new Error('Supabase not configured');
+        if (!supabase) {
+            // Demo Mode Signup
+            const mockUser = {
+                id: 'demo-user-123',
+                email: email,
+                aud: 'authenticated',
+                created_at: new Date().toISOString()
+            };
+            localStorage.setItem('vylos_demo_session', JSON.stringify(mockUser));
+            setUser(mockUser);
+            return;
+        }
         const { error } = await supabase.auth.signUp({ email, password });
         if (error) throw error;
     };
 
     const signOut = async () => {
-        if (!supabase) throw new Error('Supabase not configured');
+        if (!supabase) {
+            // Demo Mode Logout
+            localStorage.removeItem('vylos_demo_session');
+            setUser(null);
+            return;
+        }
         const { error } = await supabase.auth.signOut();
         if (error) throw error;
     };
