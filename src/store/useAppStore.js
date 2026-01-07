@@ -52,9 +52,66 @@ export const useAppStore = create(
             // Actions
             resetStore: () => set({ profile: defaultProfile, scores: defaultScores }),
 
+            // Helper to seed demo data
+            seedDemoData: () => {
+                const today = new Date().toISOString().split('T')[0];
+                const demoLogs = {};
+
+                // Generate 7 days of mock data
+                for (let i = 0; i < 7; i++) {
+                    const d = new Date();
+                    d.setDate(d.getDate() - i);
+                    const dateStr = d.toISOString().split('T')[0];
+
+                    demoLogs[dateStr] = {
+                        sleep: { duration: 7 + Math.random(), quality: 80 + Math.random() * 15 },
+                        learning: { active: 45 + Math.random() * 30, passive: 15 },
+                        screen: { total: 120 + Math.random() * 60 },
+                        nutrition: {
+                            totalCalories: 2200 + Math.random() * 300,
+                            macros: { protein: 160, carbs: 200, fats: 70 }
+                        }
+                    };
+                }
+
+                set((state) => ({
+                    profile: {
+                        ...state.profile,
+                        name: 'Demo Admin',
+                        age: 28,
+                        weight: 75,
+                        height: 180,
+                        activityLevel: 'active',
+                        goal: 'hypertrophy'
+                    },
+                    dailyLogs: demoLogs,
+                    scores: {
+                        learning: 85,
+                        screen: 92,
+                        nutrition: 88,
+                        training: 75,
+                        sleep: 82,
+                        system: 84
+                    }
+                }));
+                console.log('✨ Demo Data Seeded Successfully');
+            },
+
             // Supabase Sync Action
             syncWithSupabase: async (userId) => {
+                const isDemoUser = userId?.startsWith('demo-user-');
+
                 if (!userId) return;
+
+                // INTERCEPT: If Demo User OR Supabase not configured, SEED DATA Instead
+                if (isDemoUser || !supabase) {
+                    // Check if we already have data, if not, seed it
+                    const currentLogs = _get().dailyLogs;
+                    if (Object.keys(currentLogs).length === 0) {
+                        _get().seedDemoData();
+                    }
+                    return;
+                }
 
                 // 1. Fetch Profile
                 const { data: profileData } = await supabase.from('profiles').select('*').eq('id', userId).single();
@@ -102,12 +159,11 @@ export const useAppStore = create(
             },
         }),
         {
-            name: 'performance-lab-storage', // unique name
+            name: 'performance-lab-storage',
             storage: createJSONStorage(() => localStorage),
             partialize: (state) => ({
                 profile: state.profile,
                 dailyLogs: state.dailyLogs
-                // Don't persist scores, recalculate them on load
             }),
         }
     )
