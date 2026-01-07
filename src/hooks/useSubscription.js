@@ -179,7 +179,7 @@ export const useSubscription = () => {
                     key: RAZORPAY_KEY_ID,
                     amount: PLANS.pro.price * 100, // Amount in paise
                     currency: PLANS.pro.currency,
-                    name: 'Vyclo Labs',
+                    name: 'Vylos Labs',
                     description: 'Pro Tier Subscription - Monthly',
                     image: '/logo.png', // Add your logo
                     prefill: {

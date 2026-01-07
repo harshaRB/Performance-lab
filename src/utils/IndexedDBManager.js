@@ -5,7 +5,7 @@
 
 class IndexedDBManager {
     constructor() {
-        this.dbName = 'VycloLabsDB';
+        this.dbName = 'VylosLabsDB';
         this.version = 1;
         this.db = null;
     }

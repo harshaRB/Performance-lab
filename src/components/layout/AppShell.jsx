@@ -275,7 +275,7 @@ const Sidebar = () => {
                     <Terminal size={20} color="#fff" strokeWidth={1.5} />
                 </motion.div>
                 <div>
-                    <div style={styles.logoText}>VYCLO</div>
+                    <div style={styles.logoText}>Vylos</div>
                     <div style={styles.logoVersion}>v2.0.0-beta</div>
                 </div>
             </div>

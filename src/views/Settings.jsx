@@ -294,7 +294,7 @@ const Settings = () => {
                 <h3 style={{ marginBottom: '1rem', color: colors.text.primary }}>Privacy Policy</h3>
                 <p><strong>Last Updated:</strong> January 2026</p>
                 <br />
-                <p>Vyclo Labs (&quot;we&quot;, &quot;our&quot;, &quot;us&quot;) is committed to protecting your privacy. This policy explains how we collect, use, and safeguard your personal information.</p>
+                <p>Vylos Labs (&quot;we&quot;, &quot;our&quot;, &quot;us&quot;) is committed to protecting your privacy. This policy explains how we collect, use, and safeguard your personal information.</p>
                 <br />
                 <h4 style={{ color: colors.text.primary }}>Data We Collect</h4>
                 <ul style={{ marginLeft: '1.5rem', marginTop: '0.5rem' }}>
@@ -320,16 +320,16 @@ const Settings = () => {
                 <h3 style={{ marginBottom: '1rem', color: colors.text.primary }}>Terms of Service</h3>
                 <p><strong>Effective Date:</strong> January 2026</p>
                 <br />
-                <p>By using Vyclo Labs, you agree to these terms. Please read carefully.</p>
+                <p>By using Vylos Labs, you agree to these terms. Please read carefully.</p>
                 <br />
                 <h4 style={{ color: colors.text.primary }}>Use of Service</h4>
                 <p>You must be 18+ to use this app. You agree to provide accurate information and use the service responsibly.</p>
                 <br />
                 <h4 style={{ color: colors.text.primary }}>Intellectual Property</h4>
-                <p>All content, features, and functionality are owned by Vyclo Labs and protected by copyright laws.</p>
+                <p>All content, features, and functionality are owned by Vylos Labs and protected by copyright laws.</p>
                 <br />
                 <h4 style={{ color: colors.text.primary }}>Limitation of Liability</h4>
-                <p>Vyclo Labs is provided &quot;as is&quot; without warranties. We are not liable for any health decisions made based on app data.</p>
+                <p>Vylos Labs is provided &quot;as is&quot; without warranties. We are not liable for any health decisions made based on app data.</p>
             </div>
         ),
         medical: (
@@ -337,7 +337,7 @@ const Settings = () => {
                 <h3 style={{ marginBottom: '1rem', color: colors.accent.danger }}>⚠️ Medical Disclaimer</h3>
                 <br />
                 <p style={{ fontSize: '1rem', fontWeight: 600, color: colors.text.primary }}>
-                    Vyclo Labs is NOT a substitute for professional medical advice, diagnosis, or treatment.
+                    Vylos Labs is NOT a substitute for professional medical advice, diagnosis, or treatment.
                 </p>
                 <br />
                 <p>The health metrics, scores, and recommendations provided by this app are for informational and educational purposes only.</p>
@@ -377,7 +377,7 @@ const Settings = () => {
                 <ol style={{ marginLeft: '1.5rem', marginTop: '0.5rem' }}>
                     <li>Go to Settings → Privacy & Security</li>
                     <li>Click &quot;Export All Data&quot; (recommended backup)</li>
-                    <li>Contact support@vyclolabs.app with deletion request</li>
+                    <li>Contact support@Vyloslabs.app with deletion request</li>
                 </ol>
                 <br />
                 <h4 style={{ color: colors.text.primary }}>What Gets Deleted</h4>
@@ -394,7 +394,7 @@ const Settings = () => {
         eula: (
             <div>
                 <h3 style={{ marginBottom: '1rem', color: colors.text.primary }}>End User License Agreement (EULA)</h3>
-                <p>This agreement grants you a limited, non-exclusive license to use Vyclo Labs.</p>
+                <p>This agreement grants you a limited, non-exclusive license to use Vylos Labs.</p>
                 <br />
                 <h4 style={{ color: colors.text.primary }}>License Grant</h4>
                 <p>You may install and use the app on devices you own for personal, non-commercial use.</p>
@@ -843,7 +843,7 @@ const Settings = () => {
                             <Zap size={20} color={colors.text.primary} />
                         </div>
                         <div style={styles.rowContent}>
-                            <div style={styles.rowLabel}>Vyclo Labs</div>
+                            <div style={styles.rowLabel}>Vylos Labs</div>
                             <div style={styles.rowDescription}>Version 2.0.0</div>
                         </div>
                         <span style={{ ...styles.badge, background: `${colors.brand.primary}20`, color: colors.brand.primary }}>Beta</span>

@@ -1,6 +1,6 @@
 /**
  * BIOSTATISTICS UTILITY LIBRARY
- * Vyclo Labs Algorithm Core
+ * Vylos Labs Algorithm Core
  */
 
 import HistoricalDataManager from './HistoricalDataManager';

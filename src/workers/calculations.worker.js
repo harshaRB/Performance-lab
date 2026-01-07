@@ -1,5 +1,5 @@
 
-// Vyclo Labs - Calculations Worker
+// Vylos Labs - Calculations Worker
 // Handles heavy statistical math off the main thread.
 
 self.onmessage = (e) => {

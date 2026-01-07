@@ -271,7 +271,7 @@ const SignupPage = () => {
                 </div>
 
                 {/* Header */}
-                <h1 style={styles.title}>Join Vyclo Labs</h1>
+                <h1 style={styles.title}>Join Vylos Labs</h1>
                 <p style={styles.subtitle}>INITIALIZE // NEW_OPERATOR</p>
 
                 {/* Feature Pills */}

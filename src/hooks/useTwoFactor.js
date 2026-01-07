@@ -52,7 +52,7 @@ export const useTwoFactor = () => {
         try {
             const { data, error } = await supabase.auth.mfa.enroll({
                 factorType: 'totp',
-                friendlyName: 'Vyclo Labs Authenticator',
+                friendlyName: 'Vylos Labs Authenticator',
             });
 
             if (error) throw error;

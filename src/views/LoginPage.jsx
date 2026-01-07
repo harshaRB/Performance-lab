@@ -237,7 +237,7 @@ const LoginPage = () => {
 
                 {/* Header */}
                 <h1 style={styles.title}>Welcome Back</h1>
-                <p style={styles.subtitle}>AUTHENTICATE // VYCLO_LABS</p>
+                <p style={styles.subtitle}>AUTHENTICATE // Vylos_LABS</p>
 
                 {/* Error */}
                 {error && (
@@ -332,7 +332,7 @@ const LoginPage = () => {
 
                 {/* Footer */}
                 <div style={styles.footer}>
-                    <span>New to Vyclo Labs?</span>
+                    <span>New to Vylos Labs?</span>
                     <Link to="/signup" style={styles.link}>Create Account →</Link>
                 </div>
             </motion.div>

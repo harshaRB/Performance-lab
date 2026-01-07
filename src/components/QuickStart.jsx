@@ -51,7 +51,7 @@ const QuickStart = () => {
         <div className="card" style={{ marginTop: '2rem', border: '2px solid var(--accent-learning)' }}>
             <h3 className="mono" style={{ marginBottom: '1rem' }}>🚀 QUICK START</h3>
             <p style={{ marginBottom: '1rem', color: 'var(--text-secondary)' }}>
-                New to Vyclo Labs? Load sample data to see how the system works.
+                New to Vylos Labs? Load sample data to see how the system works.
             </p>
             <button
                 onClick={populateSampleData}

@@ -1,5 +1,5 @@
 /**
- * Vyclo Labs - Design System
+ * Vylos Labs - Design System
  * Obsidian Bioluminescence Theme
  * 
  * This file contains all shared styles, colors, typography, and animation presets
