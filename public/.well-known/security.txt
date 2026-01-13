@@ -1,0 +1,36 @@
+# Vylos Labs Security Contact
+# Please report security vulnerabilities to the contacts below.
+
+# Contact (Required)
+# Use "mailto:" for email or "https:" for a web submission form.
+Contact: mailto:security@vyloslabs.com
+Contact: https://vyloslabs.com/report-security-issue
+
+# Expires (Required)
+# This file is valid until the date below (ISO 8601 format).
+# I have set this to 1 year from now. You must update it before this date.
+Expires: 2027-01-14T00:00:00.000Z
+
+# Encryption (Optional but Recommended)
+# Link to your PGP public key so researchers can send encrypted reports.
+Encryption: https://vyloslabs.com/.well-known/pgp-key.txt
+
+# Policy (Optional)
+# Link to your disclosure policy (what you allow/don't allow).
+Policy: https://vyloslabs.com/security-policy
+
+# Acknowledgments (Optional)
+# Link to a Hall of Fame or page thanking researchers.
+Acknowledgments: https://vyloslabs.com/security/hall-of-fame
+
+# Hiring (Optional)
+# Link to security-related job openings.
+Hiring: https://vyloslabs.com/careers
+
+# Canonical (Optional)
+# The official location of this file.
+Canonical: https://vyloslabs.com/.well-known/security.txt
+
+# Preferred-Languages (Optional)
+# The languages you accept reports in.
+Preferred-Languages: en
