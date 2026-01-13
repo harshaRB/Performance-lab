@@ -292,14 +292,22 @@ const Settings = () => {
         }
     };
 
-    const saveProfile = () => {
+    const saveProfile = async () => {
         // Save to LocalStorage (Legacy/Backup)
         localStorage.setItem('pl_user_profile', JSON.stringify(profile));
 
         // Sync to Zustand Store (Live)
         updateStoreProfile(profile);
 
-        alert('Profile saved!');
+        // Sync to Supabase Cloud
+        try {
+            const { saveProfile: saveToCloud } = await import('../lib/cloudSync');
+            await saveToCloud(profile);
+            alert('Profile saved to cloud!');
+        } catch (err) {
+            console.error('[Settings] Cloud sync failed:', err);
+            alert('Profile saved locally!');
+        }
     };
 
     const toggleSection = (section) => {

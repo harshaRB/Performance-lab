@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useAppStore } from '../store/useAppStore';
 import { motion } from 'framer-motion';
 import { Droplets, Plus, RotateCcw } from 'lucide-react';
+import { saveHydration } from '../lib/cloudSync';
 
 const HydrationTracker = () => {
     const { dailyLogs, setDailyLog, scores } = useAppStore();
@@ -17,10 +18,12 @@ const HydrationTracker = () => {
         }
     }, [dailyLogs, today]);
 
-    const addWater = (amount) => {
+    const addWater = async (amount) => {
         const newVal = Math.min(intake + amount, maxTarget);
         setIntake(newVal);
         setDailyLog(today, 'hydration', newVal);
+        // Sync to cloud
+        await saveHydration(today, newVal);
     };
 
     const addCustomAmount = () => {
@@ -37,9 +40,11 @@ const HydrationTracker = () => {
         }
     };
 
-    const resetWater = () => {
+    const resetWater = async () => {
         setIntake(0);
         setDailyLog(today, 'hydration', 0);
+        // Sync to cloud
+        await saveHydration(today, 0);
     };
 
     const percentage = Math.min((intake / target) * 100, 100);

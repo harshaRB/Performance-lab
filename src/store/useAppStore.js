@@ -98,7 +98,7 @@ export const useAppStore = create(
                 console.log('✨ Demo Data Seeded Successfully');
             },
 
-            // Supabase Sync Action
+            // Supabase Sync Action - Full Cloud Sync
             syncWithSupabase: async (userId) => {
                 const isDemoUser = userId?.startsWith('demo-user-');
 
@@ -114,49 +114,108 @@ export const useAppStore = create(
                     return;
                 }
 
-                // 1. Fetch Profile
-                const { data: profileData } = await supabase.from('profiles').select('*').eq('id', userId).single();
-                if (profileData) {
+                console.log('[AppStore] Starting cloud sync for user:', userId);
+
+                try {
+                    // 1. Fetch Profile
+                    const { data: profileData } = await supabase.from('profiles').select('*').eq('id', userId).single();
+                    if (profileData) {
+                        set((state) => ({
+                            profile: {
+                                ...state.profile,
+                                name: profileData.full_name || state.profile.name,
+                                weight: profileData.weight || state.profile.weight,
+                                height: profileData.height || state.profile.height,
+                                age: profileData.age || state.profile.age,
+                                gender: profileData.gender || state.profile.gender,
+                            }
+                        }));
+                    }
+
+                    // 2. Fetch Daily Metrics (Sleep, Screen, Learning)
+                    const { data: metrics } = await supabase
+                        .from('daily_metrics')
+                        .select('*')
+                        .eq('user_id', userId)
+                        .order('date', { ascending: false })
+                        .limit(30);
+
+                    // 3. Fetch Nutrition
+                    const { data: nutrition } = await supabase
+                        .from('nutrition_logs')
+                        .select('*')
+                        .eq('user_id', userId)
+                        .order('date', { ascending: false })
+                        .limit(30);
+
+                    // 4. Fetch Hydration
+                    const { data: hydration } = await supabase
+                        .from('hydration_logs')
+                        .select('*')
+                        .eq('user_id', userId)
+                        .order('date', { ascending: false })
+                        .limit(30);
+
+                    // 5. Fetch Score History
+                    const { data: scoreData } = await supabase
+                        .from('score_history')
+                        .select('*')
+                        .eq('user_id', userId)
+                        .order('date', { ascending: false })
+                        .limit(30);
+
+                    // 6. Merge into Local State
+                    const logsMap = {};
+
+                    // Process Metrics
+                    metrics?.forEach(m => {
+                        if (!logsMap[m.date]) logsMap[m.date] = {};
+                        logsMap[m.date].sleep = { duration: m.sleep_hours, quality: m.sleep_quality };
+                        logsMap[m.date].learning = { active: m.learning_mins, passive: 0 };
+                        logsMap[m.date].screen = { total: m.screen_time_mins };
+                    });
+
+                    // Process Nutrition
+                    nutrition?.forEach(n => {
+                        if (!logsMap[n.date]) logsMap[n.date] = {};
+                        logsMap[n.date].nutrition = {
+                            totalCalories: n.calories,
+                            macros: { protein: n.protein, carbs: n.carbs, fats: n.fats }
+                        };
+                    });
+
+                    // Process Hydration
+                    hydration?.forEach(h => {
+                        if (!logsMap[h.date]) logsMap[h.date] = {};
+                        logsMap[h.date].hydration = h.glasses;
+                        // Also save to localStorage for component access
+                        localStorage.setItem(`pl_hydration_${h.date}`, String(h.glasses));
+                    });
+
+                    // Process Score History
+                    const scoreHistory = {};
+                    scoreData?.forEach(s => {
+                        scoreHistory[s.date] = {
+                            sleep: s.sleep_score,
+                            nutrition: s.nutrition_score,
+                            training: s.training_score,
+                            learning: s.learning_score,
+                            screen: s.screen_score,
+                            system: s.system_score,
+                        };
+                    });
+                    if (Object.keys(scoreHistory).length > 0) {
+                        localStorage.setItem('pl_score_history', JSON.stringify(scoreHistory));
+                    }
+
                     set((state) => ({
-                        profile: { ...state.profile, ...profileData }
+                        dailyLogs: { ...state.dailyLogs, ...logsMap }
                     }));
+
+                    console.log('[AppStore] Cloud sync complete');
+                } catch (err) {
+                    console.error('[AppStore] Sync error:', err);
                 }
-
-                // 2. Fetch Daily Metrics (Sleep, Screen, Learning)
-                const { data: metrics } = await supabase
-                    .from('daily_metrics')
-                    .select('*')
-                    .eq('user_id', userId);
-
-                // 3. Fetch Nutrition
-                const { data: nutrition } = await supabase
-                    .from('nutrition_logs')
-                    .select('*')
-                    .eq('user_id', userId);
-
-                // 4. Merge into Local State
-                const logsMap = {};
-
-                // Process Metrics
-                metrics?.forEach(m => {
-                    if (!logsMap[m.date]) logsMap[m.date] = {};
-                    logsMap[m.date].sleep = { duration: m.sleep_hours, quality: m.sleep_quality };
-                    logsMap[m.date].learning = { active: m.learning_mins, passive: 0 };
-                    logsMap[m.date].screen = { total: m.screen_time_mins };
-                });
-
-                // Process Nutrition
-                nutrition?.forEach(n => {
-                    if (!logsMap[n.date]) logsMap[n.date] = {};
-                    logsMap[n.date].nutrition = {
-                        totalCalories: n.calories,
-                        macros: { protein: n.protein, carbs: n.carbs, fats: n.fats }
-                    };
-                });
-
-                set((state) => ({
-                    dailyLogs: { ...state.dailyLogs, ...logsMap }
-                }));
             },
         }),
         {

@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { logistic, geometricMean, calculateZScore, calculateMacroScore, calculateFatiguePenalty, calculateFatQualityIndex, calculateAminoAcidScore } from '../utils/Biostatistics';
 import { useAppStore } from '../store/useAppStore';
+import { saveScores } from '../lib/cloudSync';
 
 // ============================================
 // PENALTY CONSTANTS
@@ -260,13 +261,13 @@ export const useSystemScore = () => {
             gain: (100 - m.val) * m.weight
         })).sort((a, b) => b.gain - a.gain);
 
-        setScores({
+        const finalScores = {
             learning: learningScore,
             screen: Math.round(screenScore),
             nutrition: nutritionScore,
             training: trainingScore,
             sleep: sleepScore,
-            hydration: hydrationScore, // NEW!
+            hydration: hydrationScore,
             system: Math.round(sys),
             // Completion status for UI
             mealStatus,
@@ -282,7 +283,12 @@ export const useSystemScore = () => {
                 liability: primaryLiability,
                 leverage: leverage
             }
-        });
+        };
+
+        setScores(finalScores);
+
+        // Sync scores to cloud (debounced internally by saveScores)
+        saveScores(today, finalScores);
     };
 
     return scores;
