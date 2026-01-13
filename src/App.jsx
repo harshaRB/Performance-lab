@@ -1,6 +1,7 @@
 import React, { Suspense, lazy, useEffect } from 'react';
 import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { AnimatePresence } from 'framer-motion';
+import { SpeedInsights } from '@vercel/speed-insights/react';
 import { useAuth } from './hooks/useAuth';
 import { useAppStore } from './store/useAppStore';
 import AppShell from './components/layout/AppShell';
@@ -66,6 +67,7 @@ function App() {
                     </Routes>
                 </AnimatePresence>
             </Suspense>
+            <SpeedInsights />
         </ErrorBoundary>
     );
 }

@@ -196,13 +196,14 @@ const DashboardV2 = () => {
     const activeConfig = activeModule ? moduleConfigs[activeModule] : null;
     const ActiveComponent = activeConfig?.component;
 
-    // Map scores for BiometricRadar
+    // Map scores for SystemScoreHub (now includes hydration!)
     const radarScores = {
         sleep: scores?.sleep || 0,
         nutrition: scores?.nutrition || 0,
         training: scores?.training || 0,
         learning: scores?.learning || 0,
         screen: scores?.screen || 0,
+        hydration: scores?.hydration || 0, // NEW: Hydration module
         system: scores?.system || 0,
     };
 

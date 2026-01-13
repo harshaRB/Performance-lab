@@ -216,8 +216,24 @@ const SubscriptionModal = ({ isOpen, onClose, onSuccess }) => {
                         <div style={styles.body}>
                             <div style={styles.priceBox}>
                                 <span style={{ fontSize: '1.5rem', color: colors.text.muted }}>₹</span>
-                                <span style={styles.priceAmount}>499</span>
+                                <span style={styles.priceAmount}>59</span>
                                 <span style={styles.pricePeriod}>/month</span>
+                            </div>
+
+                            <div style={{
+                                textAlign: 'center',
+                                marginBottom: '1.25rem',
+                                padding: '0.5rem 1rem',
+                                background: 'rgba(34, 197, 94, 0.1)',
+                                borderRadius: radius.lg,
+                                border: '1px solid rgba(34, 197, 94, 0.2)',
+                            }}>
+                                <span style={{ fontSize: '0.85rem', fontWeight: 600, color: '#22c55e' }}>
+                                    🎉 7-Day Free Trial
+                                </span>
+                                <span style={{ fontSize: '0.75rem', color: colors.text.muted, display: 'block', marginTop: '0.25rem' }}>
+                                    Cancel anytime during trial
+                                </span>
                             </div>
 
                             <div style={styles.featureList}>
@@ -247,7 +263,7 @@ const SubscriptionModal = ({ isOpen, onClose, onSuccess }) => {
                                 whileTap={{ scale: 0.98 }}
                             >
                                 <CreditCard size={18} />
-                                Upgrade to Pro
+                                Start Free Trial
                             </motion.button>
 
                             <button style={styles.cancelBtn} onClick={handleClose}>

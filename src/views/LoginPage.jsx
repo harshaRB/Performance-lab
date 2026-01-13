@@ -3,6 +3,8 @@ import { motion } from 'framer-motion';
 import { useNavigate, Link } from 'react-router-dom';
 import { Mail, Lock, Zap, Eye, EyeOff } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
+import { supabase } from '../lib/supabaseClient';
+import MFAChallengeModal from '../components/auth/MFAChallengeModal';
 
 // Inline styles to guarantee rendering
 const styles = {
@@ -181,18 +183,70 @@ const LoginPage = () => {
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
     const [isHovered, setIsHovered] = useState(false);
+    const [isLoggingIn, setIsLoggingIn] = useState(false);
     const { signIn, loading } = useAuth();
     const navigate = useNavigate();
     const [error, setError] = useState(null);
 
+    // MFA challenge state
+    const [showMFAModal, setShowMFAModal] = useState(false);
+    const [mfaFactorId, setMfaFactorId] = useState(null);
+
     const handleLogin = async (e) => {
         e.preventDefault();
         setError(null);
+        setIsLoggingIn(true);
+
         try {
             await signIn(email, password);
+
+            // Check Authenticator Assurance Level (AAL) as per Supabase docs
+            if (supabase) {
+                const { data: aalData, error: aalError } = await supabase.auth.mfa.getAuthenticatorAssuranceLevel();
+
+                if (aalError) {
+                    console.error('[MFA] Error checking AAL:', aalError);
+                    // Continue without MFA check if there's an error
+                    navigate('/');
+                    return;
+                }
+
+                // If nextLevel is aal2 but currentLevel is aal1, MFA verification is needed
+                if (aalData.nextLevel === 'aal2' && aalData.currentLevel !== 'aal2') {
+                    // Get the factor ID for the challenge
+                    const { data: factorsData } = await supabase.auth.mfa.listFactors();
+                    const totpFactors = factorsData?.totp || [];
+
+                    if (totpFactors.length > 0) {
+                        setMfaFactorId(totpFactors[0].id);
+                        setShowMFAModal(true);
+                        setIsLoggingIn(false);
+                        return;
+                    }
+                }
+            }
+
+            // No MFA needed or already at aal2 - proceed to dashboard
             navigate('/');
         } catch (err) {
             setError(err.message);
+            setIsLoggingIn(false);
+        }
+    };
+
+    const handleMFASuccess = () => {
+        setShowMFAModal(false);
+        setMfaFactorId(null);
+        // Session is automatically refreshed by Supabase after successful MFA verification
+        navigate('/');
+    };
+
+    const handleMFAClose = () => {
+        setShowMFAModal(false);
+        setMfaFactorId(null);
+        // Sign out since MFA was not completed
+        if (supabase) {
+            supabase.auth.signOut();
         }
     };
 
@@ -338,9 +392,9 @@ const LoginPage = () => {
                         onMouseLeave={() => setIsHovered(false)}
                         whileHover={{ scale: 1.02 }}
                         whileTap={{ scale: 0.98 }}
-                        disabled={loading}
+                        disabled={loading || isLoggingIn}
                     >
-                        {loading ? '⟳ Authenticating...' : 'Sign In'}
+                        {(loading || isLoggingIn) ? '⟳ Authenticating...' : 'Sign In'}
                     </motion.button>
                 </form>
 
@@ -350,6 +404,14 @@ const LoginPage = () => {
                     <Link to="/signup" style={styles.link}>Create Account →</Link>
                 </div>
             </motion.div>
+
+            {/* MFA Challenge Modal */}
+            <MFAChallengeModal
+                isOpen={showMFAModal}
+                onClose={handleMFAClose}
+                onSuccess={handleMFASuccess}
+                factorId={mfaFactorId}
+            />
         </div>
     );
 };

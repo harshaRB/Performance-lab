@@ -38,40 +38,34 @@ export const AuthProvider = ({ children }) => {
     }, []);
 
     const signIn = async (email, password) => {
-        try {
-            if (!supabase) throw new Error('Supabase not configured');
-            const { error } = await supabase.auth.signInWithPassword({ email, password });
-            if (error) throw error;
-        } catch (err) {
-            console.warn('Auth failed or not configured, falling back to Demo Mode:', err);
-            // Fallback to Demo Mode for ANY error (config missing, network, or invalid creds in dev)
-            const mockUser = {
-                id: 'demo-user-' + Math.random().toString(36).substr(2, 9),
-                email: email,
-                aud: 'authenticated',
-                created_at: new Date().toISOString()
-            };
-            localStorage.setItem('vylos_demo_session', JSON.stringify(mockUser));
-            setUser(mockUser);
-            // Don't re-throw, just let them in as demo
+        if (!supabase) {
+            throw new Error('Authentication service not configured. Please contact support.');
         }
+
+        const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+
+        if (error) {
+            console.error('[Auth] Sign in failed:', error.message);
+            throw error;
+        }
+
+        // Return data for MFA handling - caller needs to check for MFA challenge
+        return data;
     };
 
     const signUp = async (email, password) => {
         if (!supabase) {
-            // Demo Mode Signup
-            const mockUser = {
-                id: 'demo-user-123',
-                email: email,
-                aud: 'authenticated',
-                created_at: new Date().toISOString()
-            };
-            localStorage.setItem('vylos_demo_session', JSON.stringify(mockUser));
-            setUser(mockUser);
-            return;
+            throw new Error('Authentication service not configured. Please contact support.');
         }
-        const { error } = await supabase.auth.signUp({ email, password });
-        if (error) throw error;
+
+        const { data, error } = await supabase.auth.signUp({ email, password });
+
+        if (error) {
+            console.error('[Auth] Sign up failed:', error.message);
+            throw error;
+        }
+
+        return data;
     };
 
     const signOut = async () => {

@@ -213,7 +213,25 @@ input:disabled {
   outline-offset: 2px;
 }
 
-/* Responsive */
+/* ============================================ */
+/* RESPONSIVE DESIGN */
+/* ============================================ */
+
+/* Large screens (1440px+) */
+@media (min-width: 1440px) {
+  .app-container {
+    max-width: 1400px;
+  }
+}
+
+/* Medium screens / tablets landscape (1024px) */
+@media (max-width: 1024px) {
+  .app-container {
+    padding: 1.5rem;
+  }
+}
+
+/* Tablets / Large phones (768px) */
 @media (max-width: 768px) {
   .grid-2 {
     grid-template-columns: 1fr;
@@ -221,5 +239,112 @@ input:disabled {
 
   .app-container {
     padding: 1rem;
+  }
+
+  /* Hide scrollbars on mobile for cleaner look */
+  ::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Touch-friendly inputs */
+  input,
+  select,
+  button {
+    min-height: 44px;
+    font-size: 16px;
+    /* Prevent iOS zoom on focus */
+  }
+}
+
+/* Small phones (480px) */
+@media (max-width: 480px) {
+  .app-container {
+    padding: 0.75rem;
+  }
+
+  .card {
+    padding: 1rem;
+    border-radius: 8px;
+  }
+
+  button,
+  .primary-btn {
+    padding: 0.875rem 1rem;
+    font-size: 0.9rem;
+  }
+}
+
+/* ============================================ */
+/* SAFE AREA SUPPORT (Notched devices) */
+/* ============================================ */
+@supports (padding: env(safe-area-inset-top)) {
+  body {
+    padding-top: env(safe-area-inset-top);
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+  }
+}
+
+/* ============================================ */
+/* TOUCH OPTIMIZATIONS */
+/* ============================================ */
+@media (pointer: coarse) {
+
+  /* Increase touch targets on touch devices */
+  button,
+  a,
+  [role="button"] {
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  /* Disable hover effects on touch for cleaner experience */
+  .card:hover {
+    border-color: var(--border-subtle);
+    box-shadow: none;
+  }
+
+  button:hover:not(:disabled) {
+    transform: none;
+    box-shadow: none;
+  }
+}
+
+/* ============================================ */
+/* REDUCED MOTION PREFERENCE */
+/* ============================================ */
+@media (prefers-reduced-motion: reduce) {
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .loading-spinner {
+    animation: none;
+  }
+}
+
+/* ============================================ */
+/* LANDSCAPE MOBILE */
+/* ============================================ */
+@media (max-height: 500px) and (orientation: landscape) {
+  .app-container {
+    padding: 0.5rem 1rem;
+  }
+}
+
+/* ============================================ */
+/* DARK MODE SYSTEM PREFERENCE SUPPORT */
+/* ============================================ */
+@media (prefers-color-scheme: light) {
+
+  /* App is dark-only by design, but this ensures consistency */
+  :root {
+    color-scheme: dark;
   }
 }

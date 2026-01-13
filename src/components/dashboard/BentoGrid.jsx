@@ -26,6 +26,33 @@ export const BentoGrid = ({ onOpenModule }) => {
     const today = new Date().toISOString().split('T')[0];
     const log = dailyLogs[today] || {};
 
+    // Helper: Calculate total nutrition calories from meal arrays
+    const getNutritionCalories = () => {
+        if (!log.nutrition) return null;
+        const allMeals = [
+            ...(log.nutrition.breakfast || []),
+            ...(log.nutrition.lunch || []),
+            ...(log.nutrition.dinner || []),
+            ...(log.nutrition.junk || [])
+        ];
+        if (allMeals.length === 0) return null;
+        return allMeals.reduce((sum, item) =>
+            sum + ((item.calories || 0) * (item.weight || 100) / 100), 0);
+    };
+
+    // Helper: Calculate total screen time from individual categories
+    const getScreenTimeTotal = () => {
+        if (!log.screen) return null;
+        const total = (Number(log.screen.productive) || 0) +
+            (Number(log.screen.social) || 0) +
+            (Number(log.screen.entertainment) || 0);
+        return total > 0 ? total : null;
+    };
+
+    const nutritionCals = getNutritionCalories();
+    const screenTimeTotal = getScreenTimeTotal();
+
+
     // Animation variants for stagger
     const containerVariants = {
         hidden: { opacity: 0 },
@@ -49,8 +76,8 @@ export const BentoGrid = ({ onOpenModule }) => {
         <motion.div
             style={{
                 display: 'grid',
-                gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
-                gap: '1.25rem',
+                gridTemplateColumns: 'repeat(auto-fit, minmax(min(240px, 100%), 1fr))',
+                gap: '1rem',
             }}
             variants={containerVariants}
             initial="hidden"
@@ -60,8 +87,8 @@ export const BentoGrid = ({ onOpenModule }) => {
             <motion.div variants={itemVariants}>
                 <MetricCard
                     title="NUTRITION"
-                    value={log.nutrition?.calories ? `${Math.round(log.nutrition.calories)}` : "--"}
-                    subtext={log.nutrition?.calories ? "KCAL CONSUMED" : "LOG MEALS"}
+                    value={nutritionCals !== null ? `${Math.round(nutritionCals)}` : "--"}
+                    subtext={nutritionCals !== null ? "KCAL CONSUMED" : "LOG MEALS"}
                     icon={Flame}
                     color="nutrition"
                     onClick={() => onOpenModule('nutrition')}
@@ -109,7 +136,7 @@ export const BentoGrid = ({ onOpenModule }) => {
             <motion.div variants={itemVariants}>
                 <MetricCard
                     title="SCREEN"
-                    value={log.screen?.total ? `${Math.floor(log.screen.total / 60)}h ${log.screen.total % 60}m` : "--"}
+                    value={screenTimeTotal !== null ? `${Math.floor(screenTimeTotal / 60)}h ${screenTimeTotal % 60}m` : "--"}
                     subtext="DIGITAL EXPOSURE"
                     icon={Smartphone}
                     color="screen"

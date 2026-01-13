@@ -22,6 +22,14 @@ export const useTwoFactor = () => {
         setError(null);
 
         try {
+            // Guard: Supabase not configured (demo mode)
+            if (!supabase) {
+                setIsEnabled(false);
+                setFactors([]);
+                setIsLoading(false);
+                return { enabled: false, factors: [] };
+            }
+
             const { data, error } = await supabase.auth.mfa.listFactors();
 
             if (error) throw error;
@@ -50,6 +58,13 @@ export const useTwoFactor = () => {
         setError(null);
 
         try {
+            // Guard: Supabase not configured (demo mode)
+            if (!supabase) {
+                setError('Two-factor authentication requires Supabase configuration');
+                setIsLoading(false);
+                return { success: false, error: 'Supabase not configured' };
+            }
+
             const { data, error } = await supabase.auth.mfa.enroll({
                 factorType: 'totp',
                 friendlyName: 'Vylos Labs Authenticator',
@@ -119,6 +134,13 @@ export const useTwoFactor = () => {
         setError(null);
 
         try {
+            // Guard: Supabase not configured (demo mode)
+            if (!supabase) {
+                setError('Two-factor authentication requires Supabase configuration');
+                setIsLoading(false);
+                return { success: false, error: 'Supabase not configured' };
+            }
+
             const id = factorId || factors[0]?.id;
 
             if (!id) {
@@ -168,6 +190,13 @@ export const useTwoFactor = () => {
         setError(null);
 
         try {
+            // Guard: Supabase not configured (demo mode)
+            if (!supabase) {
+                setError('Two-factor authentication requires Supabase configuration');
+                setIsLoading(false);
+                return { success: false, error: 'Supabase not configured' };
+            }
+
             const { data: challenge, error: challengeError } = await supabase.auth.mfa.challenge({
                 factorId,
             });

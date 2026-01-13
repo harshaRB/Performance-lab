@@ -10,6 +10,13 @@ create table if not exists profiles (
   height numeric,
   age integer,
   gender text,
+  -- Subscription fields
+  is_pro_member boolean default false,
+  subscription_id text,
+  subscription_status text default 'free', -- 'free', 'trial', 'active', 'cancelled'
+  subscription_expires_at timestamp with time zone,
+  trial_ends_at timestamp with time zone,
+  razorpay_customer_id text,
   created_at timestamp with time zone default timezone('utc'::text, now()) not null
 );
 

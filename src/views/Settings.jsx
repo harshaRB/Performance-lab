@@ -12,6 +12,7 @@ import { colors, typography, radius, animations } from '../styles/designSystem';
 import { useTwoFactor } from '../hooks/useTwoFactor';
 import { useSubscription } from '../hooks/useSubscription';
 import TwoFactorSetup from '../components/auth/TwoFactorSetup';
+import SubscriptionModal from '../components/settings/SubscriptionModal';
 import { useAppStore } from '../store/useAppStore';
 import HexagonAvatar from '../components/ui/HexagonAvatar';
 
@@ -533,7 +534,7 @@ const Settings = () => {
                         ) : (
                             <>
                                 <CreditCard size={16} />
-                                Upgrade - ₹499/mo
+                                Start Free Trial - ₹59/mo
                             </>
                         )}
                     </button>

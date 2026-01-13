@@ -8,8 +8,8 @@ import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '../lib/supabaseClient';
 import { useAuth } from './useAuth';
 
-// Demo mode flag - set to false when connecting real Razorpay backend
-const DEMO_MODE = true;
+// Demo mode flag - set to false for production Razorpay payments
+const DEMO_MODE = false;
 
 // Razorpay configuration
 const RAZORPAY_KEY_ID = import.meta.env.VITE_RAZORPAY_KEY_ID || 'rzp_test_XXXXXXXXXX';
@@ -21,6 +21,7 @@ export const PLANS = {
         price: 0,
         currency: 'INR',
         interval: null,
+        trialDays: 7,
         features: [
             'Basic tracking for 5 modules',
             '7-day data history',
@@ -31,9 +32,10 @@ export const PLANS = {
     pro: {
         id: 'pro',
         name: 'Pro',
-        price: 499,
+        price: 59,
         currency: 'INR',
         interval: 'month',
+        trialDays: 7,
         features: [
             'All Free features',
             'Advanced AI Coach insights',
@@ -102,7 +104,7 @@ export const useSubscription = () => {
                         localStorage.removeItem(`pl_subscription_${user.id}`);
                     }
                 }
-            } else {
+            } else if (supabase) {
                 // Production: Fetch from Supabase
                 const { data, error: fetchError } = await supabase
                     .from('profiles')
@@ -202,6 +204,10 @@ export const useSubscription = () => {
                             // Update Supabase
                             const expiresAt = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString();
 
+                            if (!supabase) {
+                                throw new Error('Supabase not configured');
+                            }
+
                             const { error: updateError } = await supabase
                                 .from('profiles')
                                 .update({
@@ -282,6 +288,11 @@ export const useSubscription = () => {
             }
 
             // Production: Update Supabase
+            if (!supabase) {
+                setIsLoading(false);
+                return { success: false, error: 'Supabase not configured' };
+            }
+
             const { error: updateError } = await supabase
                 .from('profiles')
                 .update({
